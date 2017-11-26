@@ -63,6 +63,7 @@ void importCSV(){
 }
 
 void moon(float x, float y, float r, int phase){
+  float tilt = 0.6;
   int gray = 200;
   switch (phase){
     case 0:
@@ -75,7 +76,7 @@ void moon(float x, float y, float r, int phase){
     case 1:
       fill(gray);
       noStroke();
-      arc(x, y, r, r, PI+HALF_PI, TWO_PI+HALF_PI, CHORD);
+      arc(x, y, r, r, PI+HALF_PI+tilt, TWO_PI+HALF_PI+tilt, CHORD);
     break;
     case 2:
       fill(gray);
@@ -85,7 +86,7 @@ void moon(float x, float y, float r, int phase){
     case 3:
       fill(gray);
       noStroke();
-      arc(x, y, r, r, HALF_PI, PI+HALF_PI, CHORD);
+      arc(x, y, r, r, HALF_PI+tilt, PI+HALF_PI+tilt, CHORD);
     break;
   }
 }
