@@ -70,32 +70,21 @@ void importCSV(){
   }
 }
 
-void moon(float x, float y, float r, int phase){
-  float tilt = 0.6;
-  int gray = 200;
-  switch (phase){
-    case 0:
-      noFill();
-      strokeWeight(1);
-      stroke(gray);
-      ellipse(x, y, r, r);
-    break;
-    case 1:
-      fill(gray);
-      noStroke();
-      arc(x, y, r, r, PI+HALF_PI+tilt, TWO_PI+HALF_PI+tilt, CHORD);
-    break;
-    case 2:
-      fill(gray);
-      noStroke();
-      ellipse(x, y, r, r);
-    break;
-    case 3:
-      fill(gray);
-      noStroke();
-      arc(x, y, r, r, HALF_PI+tilt, PI+HALF_PI+tilt, CHORD);
-    break;
-  }
+void moon(float x, float y, float r, float phase){
+  float ph1 = 1;
+  float ph2 = -1;
+  if(phase < PI){ ph2 = cos(phase); }
+  if(phase > PI){ ph1 = -cos(phase); }
+  fill(200);
+  noStroke();
+  pushMatrix();
+  translate(x,y);
+  rotate(PI*0.2);
+  beginShape();
+  for(float a = 0; a < PI; a+=PI/24.0){  vertex(r*sin(a)*ph1, r*cos(a));  }
+  for(float a = PI; a > 0; a-=PI/24.0){  vertex(r*sin(a)*ph2, r*cos(a));  }
+  endShape();
+  popMatrix();
 }
 
 void drawCalendar(){
@@ -116,7 +105,8 @@ void drawCalendar(){
     line(0,y,width,y);
   }
 
-  
+
+  // planets
   strokeWeight(3);
   stroke(255);
   for(int i = 1; i < table.getRowCount(); i++){
@@ -130,7 +120,7 @@ void drawCalendar(){
       pos = TWO_PI - pos;
       posPrev = TWO_PI - posPrev;
       stroke(colors[p*3+0], colors[p*3+1], colors[p*3+2]);
-      strokeWeight(10 - p);
+      strokeWeight(3 - p*0.333);
       if( !( (pos > 5.28 && posPrev < 1)  || (pos < 1 && posPrev > 5.28) ) ){
         line(pos / TWO_PI * width, y, posPrev / TWO_PI * width, yPrev);     
       }
@@ -169,7 +159,7 @@ void drawCalendar(){
         if(pos < 0){ pos += TWO_PI; }
         if(posPrev < 0){ posPrev += TWO_PI; }
         pos = TWO_PI - pos;
-        moon(pos / TWO_PI * width, y, 40, phase);
+        moon(pos / TWO_PI * width, y, 8, moonPhase[i]);
       }
     }
   }
@@ -185,7 +175,7 @@ void drawCalendar(){
     if(posPrev < 0){ posPrev += TWO_PI; }
     pos = TWO_PI - pos;
     posPrev = TWO_PI - posPrev;
-    strokeWeight(daylightHours[i]);
+    strokeWeight((daylightHours[i]-9) * 10);
     stroke(222,210,33);
     if( !( (pos > 5.28 && posPrev < 1)  || (pos < 1 && posPrev > 5.28) ) ){
       line(pos / TWO_PI * width, y, posPrev / TWO_PI * width, yPrev);     

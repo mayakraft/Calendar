@@ -67,17 +67,20 @@ void importCSV(){
 }
 
 void moon(float x, float y, float r, float phase){
-  float tilt = 0.6;
-  fill(200);
-  noStroke();
   float ph1 = 1;
   float ph2 = -1;
   if(phase < PI){ ph2 = cos(phase); }
   if(phase > PI){ ph1 = -cos(phase); }
+  fill(200);
+  noStroke();
+  pushMatrix();
+  translate(x,y);
+  rotate(PI*0.2);
   beginShape();
-  for(float a = 0; a < PI; a+=PI/24.0){  vertex(x+r*sin(a)*ph1, y+r*cos(a));  }
-  for(float a = PI; a > 0; a-=PI/24.0){  vertex(x+r*sin(a)*ph2, y+r*cos(a));  }
+  for(float a = 0; a < PI; a+=PI/24.0){  vertex(r*sin(a)*ph1, r*cos(a));  }
+  for(float a = PI; a > 0; a-=PI/24.0){  vertex(r*sin(a)*ph2, r*cos(a));  }
   endShape();
+  popMatrix();
 }
 
 void drawCalendar(){
