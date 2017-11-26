@@ -4,6 +4,8 @@ import processing.pdf.*;
 Table table;
 String planetNames[] = {"Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"};
 static int colors[] = {192,192,192,206,172,113,172,81,40,186,130,83,253,196,126,149,188,198,98,119,226,169,149,146};
+float moonEventAngles[] = {0.0, 1.570796326794897, 3.141592653589793, 4.71238898038469};
+String moonEventDescriptions[] = {"New", "First Quarter", "Full", "Third Quarter" };
 
 int year[];
 int month[];
@@ -57,6 +59,34 @@ void importCSV(){
       planetAngle[i][p] = row.getFloat(planetNames[p]) * PI / 180;
     }
     i++;
+  }
+}
+
+void moon(float x, float y, float r, int phase){
+  int gray = 200;
+  switch (phase){
+    case 0:
+      noFill();
+      strokeWeight(1);
+      stroke(gray);
+      ellipse(x, y, r-0.5, r-0.5);
+      ellipse(x, y, r, r);
+    break;
+    case 1:
+      fill(gray);
+      noStroke();
+      arc(x, y, r, r, PI+HALF_PI, TWO_PI+HALF_PI, CHORD);
+    break;
+    case 2:
+      fill(gray);
+      noStroke();
+      ellipse(x, y, r, r);
+    break;
+    case 3:
+      fill(gray);
+      noStroke();
+      arc(x, y, r, r, HALF_PI, PI+HALF_PI, CHORD);
+    break;
   }
 }
 
@@ -118,7 +148,6 @@ void drawCalendar(){
   //}
     
     
-
   // draw moon
   for(int i = 1; i < table.getRowCount(); i++) {
     float calendarR = innerR + (outerR-innerR)*i/table.getRowCount();
@@ -129,9 +158,23 @@ void drawCalendar(){
     line(cos(moonAngle[i-1])*lastCalendarR, sin(moonAngle[i-1])*lastCalendarR,
          cos(moonAngle[i])*calendarR, sin(moonAngle[i])*calendarR );
   }
-  
-  
-    // draw sun
+    
+    
+  // moon phases
+  for(int i = 1; i < table.getRowCount(); i++) {
+    for(int m = 0; m < 4; m++){
+      int phase = -1;
+      if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
+      if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
+      if( phase != -1 ){
+        float calendarR = innerR + (outerR-innerR)*i/table.getRowCount();
+        moon(cos(moonAngle[i])*calendarR, sin(moonAngle[i])*calendarR, 12, phase);
+      }
+    }
+  }
+
+
+  // draw sun
   for(int i = 1; i < table.getRowCount(); i++) {
     float calendarR = innerR + (outerR-innerR)*i/table.getRowCount();
     float lastCalendarR = innerR + (outerR-innerR)*(i-1)/table.getRowCount();
@@ -153,7 +196,6 @@ void drawCalendar(){
       line(cos(planetAngle[i-1][p])*lastCalendarR, sin(planetAngle[i-1][p])*lastCalendarR, cos(planetAngle[i][p])*calendarR, sin(planetAngle[i][p])*calendarR);
     }
   }
-
 
 
 }
