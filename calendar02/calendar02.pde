@@ -3,7 +3,15 @@ import processing.pdf.*;
 
 Table table;
 String planetNames[] = {"Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"};
-static int colors[] = {192,192,192,206,172,113,172,81,40,186,130,83,253,196,126,149,188,198,98,119,226,169,149,146};
+static int colors[] = {
+  129,127,130,  // mercury
+  239,194,107, // venus
+  172,81,40, // mars
+  187, 150, 110, // jupiter
+  234, 208, 153,  // saturn
+  149,188,198,  // uranus
+  98,119,226,  // neptune
+  169,149,146};  // pluto
 float moonEventAngles[] = {0.0, 1.570796326794897, 3.141592653589793, 4.71238898038469};
 String moonEventDescriptions[] = {"New", "First Quarter", "Full", "Third Quarter" };
 
@@ -19,7 +27,7 @@ float moonPhase[];
 float daylightHours[];
 
 void setup(){
-  size(700, 700, P3D);
+  size(200, 700, P3D);
   noLoop();
   
   importCSV();
@@ -70,7 +78,6 @@ void moon(float x, float y, float r, int phase){
       noFill();
       strokeWeight(1);
       stroke(gray);
-      ellipse(x, y, r-0.5, r-0.5);
       ellipse(x, y, r, r);
     break;
     case 1:
@@ -97,11 +104,18 @@ void drawCalendar(){
   rect(0, 0, width, height);
   
   strokeWeight(.5);
-  stroke(100);
+  stroke(60);
   for(int i = 0; i < 13; i++){
     float x = i/12.0*width;
     line(x,0,x,height);
   }
+  
+  stroke(255);
+  for(int i = 0; i < 13; i++){
+    float y = i/12.0*height;
+    line(0,y,width,y);
+  }
+
   
   strokeWeight(3);
   stroke(255);

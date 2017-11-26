@@ -70,7 +70,6 @@ void moon(float x, float y, float r, int phase){
       noFill();
       strokeWeight(1);
       stroke(gray);
-      ellipse(x, y, r-0.5, r-0.5);
       ellipse(x, y, r, r);
     break;
     case 1:
