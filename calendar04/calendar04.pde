@@ -84,7 +84,7 @@ void moon(float x, float y, float r, float phase){
 }
 
 void drawCalendar(){
-  fill(40);
+  fill(200);
   noStroke();
   rect(0, 0, width, height);
   

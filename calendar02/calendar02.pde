@@ -12,8 +12,12 @@ static int colors[] = {
   149,188,198,  // uranus
   98,119,226,  // neptune
   169,149,146};  // pluto
-float moonEventAngles[] = {0.0, 1.570796326794897, 3.141592653589793, 4.71238898038469};
-String moonEventDescriptions[] = {"New", "First Quarter", "Full", "Third Quarter" };
+//float moonEventAngles[] = {0.0, 1.570796326794897, 3.141592653589793, 4.71238898038469};
+//String moonEventDescriptions[] = {"New", "First Quarter", "Full", "Third Quarter" };
+
+float moonEventAngles[] = {0.0, 0.785398163397448, 1.570796326794897, 2.356194490192345, 3.141592653589793, 3.926990816987242, 4.71238898038469, 5.497787143782138};
+
+
 
 int year[];
 int month[];
@@ -128,28 +132,28 @@ void drawCalendar(){
   }
   
   // moon
-  for(int i = 1; i < table.getRowCount(); i++){
-    float y = float(i) / table.getRowCount()*height;
-    float yPrev = float(i-1) / table.getRowCount()*height;
-    float pos = (moonAngle[i] - PI*3/2);
-    float posPrev = (moonAngle[i-1] - PI*3/2);
-    if(pos < 0){ pos += TWO_PI; }
-    if(posPrev < 0){ posPrev += TWO_PI; }
-    pos = TWO_PI - pos;
-    posPrev = TWO_PI - posPrev;
-    float phase0_1 = 1.0 - (cos(moonPhase[i])*0.5+0.5);
-    strokeWeight(phase0_1 * 5 + 1);
-    stroke(phase0_1 * 100 + 100);
-    if( !( (pos > 5.28 && posPrev < 1)  || (pos < 1 && posPrev > 5.28) ) ){
-      line(pos / TWO_PI * width, y, posPrev / TWO_PI * width, yPrev);     
-    }
-  }
+  //for(int i = 1; i < table.getRowCount(); i++){
+  //  float y = float(i) / table.getRowCount()*height;
+  //  float yPrev = float(i-1) / table.getRowCount()*height;
+  //  float pos = (moonAngle[i] - PI*3/2);
+  //  float posPrev = (moonAngle[i-1] - PI*3/2);
+  //  if(pos < 0){ pos += TWO_PI; }
+  //  if(posPrev < 0){ posPrev += TWO_PI; }
+  //  pos = TWO_PI - pos;
+  //  posPrev = TWO_PI - posPrev;
+  //  float phase0_1 = 1.0 - (cos(moonPhase[i])*0.5+0.5);
+  //  strokeWeight(phase0_1 * 5 + 1);
+  //  stroke(phase0_1 * 100 + 100);
+  //  if( !( (pos > 5.28 && posPrev < 1)  || (pos < 1 && posPrev > 5.28) ) ){
+  //    line(pos / TWO_PI * width, y, posPrev / TWO_PI * width, yPrev);     
+  //  }
+  //}
 
 
   // moon
   for(int i = 1; i < table.getRowCount(); i++){
     float y = float(i) / table.getRowCount()*height;
-    for(int m = 0; m < 4; m++){
+    for(int m = 0; m < 8; m++){
       int phase = -1;
       if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
       if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
@@ -159,7 +163,7 @@ void drawCalendar(){
         if(pos < 0){ pos += TWO_PI; }
         if(posPrev < 0){ posPrev += TWO_PI; }
         pos = TWO_PI - pos;
-        moon(pos / TWO_PI * width, y, 8, moonPhase[i]);
+        moon(pos / TWO_PI * width, y, 4, moonPhase[i]);
       }
     }
   }
@@ -175,7 +179,7 @@ void drawCalendar(){
     if(posPrev < 0){ posPrev += TWO_PI; }
     pos = TWO_PI - pos;
     posPrev = TWO_PI - posPrev;
-    strokeWeight((daylightHours[i]-9) * 10);
+    strokeWeight((daylightHours[i]-9) * 3);
     stroke(222,210,33);
     if( !( (pos > 5.28 && posPrev < 1)  || (pos < 1 && posPrev > 5.28) ) ){
       line(pos / TWO_PI * width, y, posPrev / TWO_PI * width, yPrev);     
