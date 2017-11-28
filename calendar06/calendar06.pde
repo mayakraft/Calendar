@@ -2,6 +2,7 @@ import processing.pdf.*;
 
 Table table;
 String planetNames[] = {"Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"};
+int totalDays[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 int year[];
 int month[];
@@ -55,6 +56,12 @@ void importCSV(){
   }
 }
 
+int zodiacForRadians(float radians){
+  radians -= PI*3/2;
+  while(radians < 0){ radians += PI*2; }
+  return int(radians/(PI*2)*12);
+}
+
 void moon(float x, float y, float r, float phase){
   float ph1 = 1;
   float ph2 = -1;
@@ -77,13 +84,43 @@ void drawCalendar(){
   noStroke();
   rect(0, 0, width, height);
   
-  int pad = 20;
+  float padW = 30;
+  float padH = 10;
+  float barH = (1.0/12.0) * (height-padH*13);
+  
+  stroke(200);
+  strokeWeight(1);
+  noFill();
 
-  // moon
+  for(int i = 0; i < 12; i++){
+    for(int j = 1; j < 12; j++){
+      float x = padW + (width-padW*2)/12.0*j;
+      stroke(60);
+      line(x, padH+(barH+padH)*i, x, padH+(barH+padH)*i+barH);
+    }
+    stroke(80);
+    rect(padW, padH+(barH+padH)*i, width-padW*2, barH); 
+  }
+  
+  noStroke();
+  fill(120);
   for(int i = 0; i < table.getRowCount(); i++){
-    if(hour[i] == 0){
-      float x = day[i]/33.0 * (width-pad*2) + pad;
-      float y = float(month[i])/14.0 * height + day[i]*2;
+    if(day[i] == 1 && hour[i] == 0){
+      for(int p = 0; p < planetNames.length; p++){
+        int zodiac = zodiacForRadians(planetAngle[i][p]);
+        float x = padW + (width-padW*2)/12.0*zodiac;
+        float y = padH+(barH+padH)*(month[i]-1);
+        rect(x, y, (width-padW*2)/12.0, barH);
+      }
+    }
+  }
+    
+  // moon
+  for(int i = 1; i < table.getRowCount(); i++){
+    if(moonPhase[i] > PI && moonPhase[i-1] <= PI){
+      int zodiac = zodiacForRadians(moonAngle[i]);
+      float x = padW + (width-padW*2)/12.0*zodiac + (width-padW*2)/12.0*0.5;
+      float y = padH + (barH+padH)*(month[i]-1) + barH * (float(day[i])/totalDays[ month[i]-1 ]);
       moon(x, y, 6, moonPhase[i]);
     }
   }
