@@ -31,7 +31,7 @@ void setup(){
 }
 
 void importCSV(){
-  table = loadTable("../2018.csv", "header");
+  table = loadTable("../2018geocentric.csv", "header");
 
   year = new int[table.getRowCount()];
   month = new int[table.getRowCount()];
@@ -94,7 +94,7 @@ void drawCalendar(){
   fill(40);
   strokeWeight(0);
   noStroke();
-  rect(0, 0, width, height);
+  //rect(0, 0, width, height);
 
   translate(width*0.5, height*0.5);
   rotate(-9.0/365.0*PI*2);
@@ -105,8 +105,8 @@ void drawCalendar(){
   noFill();
   strokeWeight(1);
   stroke(100);
-  ellipse(0, 0, innerR*2, innerR*2);
-  ellipse(0, 0, outerR*2, outerR*2);
+  //ellipse(0, 0, innerR*2, innerR*2);
+  //ellipse(0, 0, outerR*2, outerR*2);
 
   for(float i = 0; i < PI*2; i += PI*2/60.0 ){
     float r1 = outerR;
@@ -114,7 +114,43 @@ void drawCalendar(){
     line(cos(i)*r1, sin(i)*r1, cos(i)*r2, sin(i)*r2);
   }
   
-
+  int count = 0;
+  for(float i = 0; i < PI*2; i += PI*2/120.0 ){
+    if(count % 2 == 1){
+      float r1 = outerR;
+      float r2 = outerR+6.66;
+      line(cos(i)*r1, sin(i)*r1, cos(i)*r2, sin(i)*r2);
+    }
+    count++;
+  }
+  count = 0;
+  for(float i = 0; i < PI*2; i += PI*2/240.0 ){
+    if(count % 2 == 1){
+      float r1 = outerR;
+      float r2 = outerR+4.444;
+      line(cos(i)*r1, sin(i)*r1, cos(i)*r2, sin(i)*r2);
+    }
+    count++;
+  }  
+  count = 0;
+  for(float i = 0; i < PI*2; i += PI*2/480.0 ){
+    if(count % 2 == 1){
+      float r1 = outerR;
+      float r2 = outerR+2.888;
+      line(cos(i)*r1, sin(i)*r1, cos(i)*r2, sin(i)*r2);
+    }
+    count++;
+  }  
+  count = 0;
+  for(float i = 0; i < PI*2; i += PI*2/960.0 ){
+    if(count % 2 == 1){
+      float r1 = outerR;
+      float r2 = outerR+1.9;
+      line(cos(i)*r1, sin(i)*r1, cos(i)*r2, sin(i)*r2);
+    }
+    count++;
+  }  
+    
   //noStroke();
 //  for(int i = 12; i >= 0; i--){
 ////    fill(40 + (i%2)*160 );
@@ -127,9 +163,11 @@ void drawCalendar(){
     line(cos(i)*innerR, sin(i)*innerR, cos(i)*outerR, sin(i)*outerR);
   }
   
-  strokeWeight(4);
-  stroke(200);
-  noFill();
+//  strokeWeight(4);
+//  stroke(200);
+//  noFill();
+
+
   //ellipse(center.x, center.y, radius*2, radius*2);
   //ellipse(center.x, center.y, radius*2*0.9, radius*2*0.9);
   //for(float i = 0; i < 12; i++){
@@ -154,13 +192,13 @@ void drawCalendar(){
     float lastCalendarR = innerR + (outerR-innerR)*(i-1)/table.getRowCount();
     float phase0_1 = cos(moonPhase[i])*0.5+0.5;
     strokeWeight(6 - phase0_1*5);
-    stroke(170 - phase0_1 * 110);
+    stroke(phase0_1 * 255);
     line(cos(moonAngle[i-1])*lastCalendarR, sin(moonAngle[i-1])*lastCalendarR,
          cos(moonAngle[i])*calendarR, sin(moonAngle[i])*calendarR );
   }
     
     
-  // moon phases
+  //// moon phases
   for(int i = 1; i < table.getRowCount(); i++) {
     for(int m = 0; m < 4; m++){
       int phase = -1;
@@ -174,7 +212,7 @@ void drawCalendar(){
   }
 
 
-  // draw sun
+  //// draw sun
   for(int i = 1; i < table.getRowCount(); i++) {
     float calendarR = innerR + (outerR-innerR)*i/table.getRowCount();
     float lastCalendarR = innerR + (outerR-innerR)*(i-1)/table.getRowCount();
@@ -186,7 +224,7 @@ void drawCalendar(){
   }
   
   
-  // draw planets
+  //// draw planets
   for(int i = 1; i < table.getRowCount(); i++) {
     float calendarR = innerR + (outerR-innerR)*i/table.getRowCount();
     float lastCalendarR = innerR + (outerR-innerR)*(i-1)/table.getRowCount();

@@ -71,8 +71,10 @@ void moon(float x, float y, float r, float phase){
   float ph2 = -1;
   if(phase < PI){ ph2 = cos(phase); }
   if(phase > PI){ ph1 = -cos(phase); }
-  fill(200);
-  noStroke();
+  //fill(200);
+  //noStroke();
+  stroke(200);
+  noFill();
   pushMatrix();
   translate(x,y);
   rotate(PI*0.2);
@@ -99,15 +101,15 @@ void drawCalendar(){
       float y = week / 52.0 * (height-pad*2) + pad;
       moon(x, y, 4, moonPhase[i]);
       
-      if(day[i] == 1){
-        stroke(200);
-        strokeWeight(0.33);
-        float lineH = 1.0 / 52.0 * (height-pad*2);
-        float lineX = ((dayCount-1)%7 + dayCount%7)*0.5 / 7.0 * (width-pad*2) + pad;
-        line(lineX, y - lineH*.5, lineX, y + lineH*0.5);
-        line(pad*0.5, y + lineH*.5, lineX, y + lineH*0.5);
-        line(lineX, y - lineH*.5, width - (1/7.0 * (width-pad*2)) - pad*0.5, y - lineH*0.5);
-      }
+      //if(day[i] == 1){
+      //  stroke(200);
+      //  strokeWeight(0.33);
+      //  float lineH = 1.0 / 52.0 * (height-pad*2);
+      //  float lineX = ((dayCount-1)%7 + dayCount%7)*0.5 / 7.0 * (width-pad*2) + pad;
+      //  line(lineX, y - lineH*.5, lineX, y + lineH*0.5);
+      //  line(pad*0.5, y + lineH*.5, lineX, y + lineH*0.5);
+      //  line(lineX, y - lineH*.5, width - (1/7.0 * (width-pad*2)) - pad*0.5, y - lineH*0.5);
+      //}
       
       dayCount+=1;
     }

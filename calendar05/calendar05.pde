@@ -6,6 +6,7 @@ String planetNames[] = {"Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Ne
 static int colors[] = {192,192,192,206,172,113,172,81,40,186,130,83,253,196,126,149,188,198,98,119,226,169,149,146};
 //float moonEventAngles[] = {0.0, 1.570796326794897, 3.141592653589793, 4.71238898038469};
 float moonEventAngles[] = {0.0, 0.785398163397448, 1.570796326794897, 2.356194490192345, 3.141592653589793, 3.926990816987242, 4.71238898038469, 5.497787143782138};
+float monthDays[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 int year[];
 int month[];
@@ -65,6 +66,13 @@ void importCSV(){
   }
 }
 
+void moonInverse(float x, float y, float r, float phase){
+  phase += PI;
+  if(phase > 2*PI) phase -= 2*PI;
+  moon(x, y, r, phase);
+}
+
+
 void moon(float x, float y, float r, float phase){
   float ph1 = 1;
   float ph2 = -1;
@@ -85,7 +93,6 @@ void moon(float x, float y, float r, float phase){
 float pimargin = 0.075;
 
 float pipad(float radians){
-
   while(radians < 0) radians += PI*2;
   while(radians > 2*PI) radians -= PI*2;
   float zto1 = radians/(2*PI);
@@ -106,36 +113,49 @@ void drawCalendar(){
   
 
   noFill();
-  stroke(255);
-  arc(0,0, innerR*2, innerR*2, pipad(0), pipad(2*PI));
-  arc(0,0, outerR*2, outerR*2, pipad(0), pipad(2*PI));
-  for(int i = 1; i < 12; i++){
-    float r = innerR*2 + (outerR*2-innerR*2)*i/12.0;
-    arc(0,0, r, r, pipad(0), pipad(2*PI));    
-  }
-  for(float i = 0; i <= 12; i+=1){
-    float a = pipad(i/12.0*PI*2);
-    line(cos(a)*innerR, sin(a)*innerR, cos(a)*outerR, sin(a)*outerR );
-  }
+  //stroke(255);
+  //arc(0,0, innerR*2, innerR*2, pipad(0), pipad(2*PI));
+  //arc(0,0, outerR*2, outerR*2, pipad(0), pipad(2*PI));
+  //for(int i = 1; i < 12; i++){
+  //  float r = innerR*2 + (outerR*2-innerR*2)*i/12.0;
+  //  arc(0,0, r, r, pipad(0), pipad(2*PI));    
+  //}
+  //float monthPct = 0;
+  //for(int i = 0; i <= 12; i+=1){
+  //  if(i != 0){ monthPct += monthDays[i-1] / 365.0; }
+  //  float a = pipad(monthPct*PI*2);
+  //  line(cos(a)*innerR, sin(a)*innerR, cos(a)*outerR, sin(a)*outerR );
+  //}
   
+  
+  noFill();
   
   // moon
-  stroke(160);
-  for(int i = 1; i < table.getRowCount(); i++) {
-    strokeWeight( (1.0 - cos(moonPhase[i])*0.5+0.5)*1 );
-    stroke( 100-(cos(moonPhase[i])*0.5+0.5)*60 );
-    float calendarA = pipad(float(i)/table.getRowCount()*2*PI);
-    float lastCalendarA = pipad(float(i-1)/table.getRowCount()*2*PI);
-    float moonR = innerR + (outerR-innerR)*moonAngle[i]/(2*PI);
-    float lastMoonR = innerR + (outerR-innerR)*moonAngle[i-1]/(2*PI);
-    if( (moonAngle[i] > 5.7 && moonAngle[i-1] < .5) || (moonAngle[i-1] > 5.7 && moonAngle[i] < .5) ){
-    } else{
-      line(cos(lastCalendarA)*lastMoonR, sin(lastCalendarA)*lastMoonR, cos(calendarA)*moonR, sin(calendarA)*moonR);
-    }
-  }
+  //stroke(160);
+  //strokeWeight(10);
+  //for(int i = 1; i < table.getRowCount(); i++) {
+  //  //strokeWeight( (1.0 - cos(moonPhase[i])*0.5+0.5)*10 );
+    //stroke( (cos(moonPhase[i])*0.5+0.5)*192 + 64 );
+  //  float calendarA = pipad(float(i)/table.getRowCount()*2*PI);
+  //  float lastCalendarA = pipad(float(i-1)/table.getRowCount()*2*PI);
+  //  float moonR = innerR + (outerR-innerR)*moonAngle[i]/(2*PI);
+  //  float lastMoonR = innerR + (outerR-innerR)*moonAngle[i-1]/(2*PI);
+  //  if(i > 1){
+  //    float dR = moonR - lastMoonR;
+  //    float dLastR = lastMoonR - (innerR + (outerR-innerR)*moonAngle[i-2]/(2*PI));
+  //    if(dR > 0 && dLastR <= 0){
+  //      println(dR + " " + dLastR);
+  //      line(0, 0, cos(calendarA)*moonR, sin(calendarA)*moonR);
+  //    }
+  //  }
+  //  if( (moonAngle[i] > 5.7 && moonAngle[i-1] < .5) || (moonAngle[i-1] > 5.7 && moonAngle[i] < .5) ){
+  //  } else{
+  //    line(cos(lastCalendarA)*lastMoonR, sin(lastCalendarA)*lastMoonR, cos(calendarA)*moonR, sin(calendarA)*moonR);
+  //  }
+  //}
 
 
-      // planets
+  // planets
   //for(int i = 1; i < table.getRowCount(); i++) {
   //  for(int p = 0; p < 8; p++){
   //    strokeWeight( 2 );
@@ -152,35 +172,39 @@ void drawCalendar(){
   //}
   
   
+  stroke(255);
   
    // sun
-  stroke(222,210,33);
-  for(int i = 1; i < table.getRowCount(); i++) {
-    //strokeWeight((daylightHours[i]-9)*2);
-    strokeWeight((daylightHours[i]-9)*0.7+1);
-    float calendarA = pipad(float(i)/table.getRowCount()*2*PI);
-    float lastCalendarA = pipad(float(i-1)/table.getRowCount()*2*PI);
-    float sunR = innerR + (outerR-innerR)*sunAngle[i]/(2*PI);
-    float lastSunR = innerR + (outerR-innerR)*sunAngle[i-1]/(2*PI);
-    if( (sunAngle[i] > 5.7 && sunAngle[i-1] < .5) || (sunAngle[i-1] > 5.7 && sunAngle[i] < .5) ){
-    } else{
-      line(cos(lastCalendarA)*lastSunR, sin(lastCalendarA)*lastSunR, cos(calendarA)*sunR, sin(calendarA)*sunR);
-    }
-  }
-  
-  //// moon phase
+  //stroke(222,210,33);
   //for(int i = 1; i < table.getRowCount(); i++) {
-  //  for(int m = 0; m < 8; m++){
-  //    int phase = -1;
-  //    if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
-  //    if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
-  //    if( phase != -1 ){
-  //      float calendarA = pipad(float(i)/table.getRowCount()*2*PI);
-  //      float moonR = innerR + (outerR-innerR)*moonAngle[i]/(2*PI);
-  //      moon(cos(calendarA)*moonR, sin(calendarA)*moonR, 4, moonPhase[i]);
-  //    }
+  //  //strokeWeight((daylightHours[i]-9)*2);
+  //  strokeWeight((daylightHours[i]-9)*7+.2);
+  //  float calendarA = pipad(float(i)/table.getRowCount()*2*PI);
+  //  float lastCalendarA = pipad(float(i-1)/table.getRowCount()*2*PI);
+  //  float sunR = innerR + (outerR-innerR)*sunAngle[i]/(2*PI);
+  //  float lastSunR = innerR + (outerR-innerR)*sunAngle[i-1]/(2*PI);
+  //  if( (sunAngle[i] > 5.7 && sunAngle[i-1] < .5) || (sunAngle[i-1] > 5.7 && sunAngle[i] < .5) ){
+  //  } else{
+  //    line(cos(lastCalendarA)*lastSunR, sin(lastCalendarA)*lastSunR, cos(calendarA)*sunR, sin(calendarA)*sunR);
   //  }
   //}
+  
+  //// moon phase
+  for(int i = 1; i < table.getRowCount(); i++) {
+    for(int m = 0; m < 8; m++){
+      int phase = -1;
+      if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
+      if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
+      if( phase != -1 ){
+        float calendarA = pipad(float(i)/table.getRowCount()*2*PI);
+        float moonR = innerR + (outerR-innerR)*moonAngle[i]/(2*PI);
+        //moon(cos(calendarA)*moonR, sin(calendarA)*moonR, 4, moonPhase[i]);
+        moonInverse(cos(calendarA)*moonR, -sin(calendarA)*moonR, 4, moonPhase[i]);
+    //stroke( (cos(moonPhase[i])*0.5+0.5)*192 + 64 );
+    //line(cos(calendarA)*moonR, sin(calendarA)*moonR, 0, 0);
+      }
+    }
+  }
   
     
 
