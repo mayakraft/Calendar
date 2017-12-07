@@ -52,11 +52,11 @@ void setup(){
 }
 
 void draw(){
-  //logfactor = mouseX * 0.1;
-  //auscale = mouseY;
+  logfactor = mouseX * 0.1;
+  auscale = mouseY;
   //println(logfactor + "  " + auscale);
-  dayindex = int(float(mouseX) * table.getRowCount() / width);
-  println(dayindex);
+  //dayindex = int(float(mouseX) * table.getRowCount() / width);
+  //println(dayindex);
   drawCalendar();
 }
 
@@ -117,18 +117,39 @@ void drawCalendar(){
   rect(0, 0, width, height);
 
   translate(width*0.5, height*0.5);
-  //rotate(-9.0/365.0*PI*2);
   
-  float outerRadius = 300;
+  float oneAU = au(sunDistance[dayindex])*2;
 
   // 1 AU circle
   noStroke();
   fill(45);
-  ellipse(0, 0, au(sunDistance[dayindex])*2, au(sunDistance[dayindex])*2);
+  ellipse(0, 0, oneAU, oneAU);
 
   noFill();
   stroke(244);
+  
+
+  for(int i = 0; i < 20; i++){
+    int round = int(i/10.0);
+    int imod = i%10;
+    float r = pow(imod/10.0, 1./logfactor);
+    r = r * oneAU + oneAU * round;
+    arc(0, 0, r, r, HALF_PI-.05, HALF_PI+.05);
+  }
+  float hundredAU = pow(1, 1./logfactor) * oneAU * 2;
+  float outerRadius = hundredAU * 0.5;
+
   ellipse(0, 0, outerRadius*2, outerRadius*2);
+
+
+ 
+  fill(255);
+  text("2018 "  + monthNames[month[dayindex]-1] + " " + day[dayindex], -width*0.5+8, -height*0.5+20);
+  
+  // rotate everything
+    rotate(9.0/365.0*PI*2);
+  
+  // zodiac lines
   for(int i = 0; i < 12; i++){
     line(outerRadius*cos(i/12.0*PI*2), outerRadius*sin(i/12.0*PI*2), (outerRadius-10)*cos(i/12.0*PI*2), (outerRadius-10)*sin(i/12.0*PI*2)); 
   }
@@ -143,12 +164,21 @@ void drawCalendar(){
   ellipse(au(sunDistance[dayindex]) * -cos(sunLongitude[dayindex]), 
           au(sunDistance[dayindex]) * sin(sunLongitude[dayindex]), pRadius*2, pRadius*2);
   
+  //fill(210, 200, 0);
+  stroke(210, 200, 0);
+  noFill();
+  float sunL = sunLongitude[dayindex] - sunLongitude[0];
+  while(sunL < 0){ sunL += PI*2; }
+  pushMatrix();
+  scale(-1,1);
+  arc(0, 0, oneAU, oneAU, sunLongitude[0], sunLongitude[0] + sunL, PIE);
+  popMatrix();
+  
   noFill();
   stroke(255);
   // moon
   ellipse(au(moonDistance[dayindex]) * -cos(moonLongitude[dayindex]), 
           au(moonDistance[dayindex]) * sin(moonLongitude[dayindex]), pRadius, pRadius);
-          
           
   // lines to bodies
   // sun
@@ -174,8 +204,5 @@ void drawCalendar(){
     ellipse(au(planetDistance[dayindex][i]) * -cos(planetLongitude[dayindex][i]), 
             au(planetDistance[dayindex][i]) * sin(planetLongitude[dayindex][i]), pRadius, pRadius);
   }
-  
-  fill(255);
-  text("2018 "  + monthNames[month[dayindex]-1] + " " + day[dayindex], -width*0.5+8, -height*0.5+20);
-  
+ 
 }
