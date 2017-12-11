@@ -31,6 +31,7 @@ String zodiac[];
 int dayindex = 0;
 
 int pRadius = 10;
+int moonRadius = 30;
 
 void setup(){
   size(700, 700, P3D);
@@ -52,10 +53,10 @@ void setup(){
 }
 
 void draw(){
-  logfactor = mouseX * 0.1;
-  auscale = mouseY;
+  //logfactor = mouseX * 0.1;
+  //auscale = mouseY;
   //println(logfactor + "  " + auscale);
-  //dayindex = int(float(mouseX) * table.getRowCount() / width);
+  dayindex = int(float(mouseX) * table.getRowCount() / width);
   //println(dayindex);
   drawCalendar();
 }
@@ -102,7 +103,7 @@ void importCSV(){
   }    
 }
 
-float logfactor = 6.3;
+float logfactor = 10.0;//6.3;
 float auscale = 135;
 
 float au(float input){
@@ -157,7 +158,7 @@ void drawCalendar(){
   // earth
   noStroke();
   fill(60, 110, 230);
-  ellipse(0, 0, pRadius, pRadius);
+  ellipse(0, 0, pRadius*4, pRadius*4);
 
   // sun
   fill(210, 200, 0);
@@ -174,12 +175,20 @@ void drawCalendar(){
   arc(0, 0, oneAU, oneAU, sunLongitude[0], sunLongitude[0] + sunL, PIE);
   popMatrix();
   
-  noFill();
-  stroke(255);
+  fill(40);
+  noStroke();
   // moon
   ellipse(au(moonDistance[dayindex]) * -cos(moonLongitude[dayindex]), 
-          au(moonDistance[dayindex]) * sin(moonLongitude[dayindex]), pRadius, pRadius);
+          au(moonDistance[dayindex]) * sin(moonLongitude[dayindex]), moonRadius, moonRadius);
+  fill(200);
+  pushMatrix();
+  translate(au(moonDistance[dayindex]) * -cos(moonLongitude[dayindex]), au(moonDistance[dayindex]) * sin(moonLongitude[dayindex]));
+  rotate(-sunLongitude[dayindex]+PI*0.5);
+  arc(0, 0, moonRadius, moonRadius, 0, PI, CHORD);
+  popMatrix();
           
+  noFill();
+  stroke(255);
   // lines to bodies
   // sun
   stroke(100);
