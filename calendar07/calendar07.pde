@@ -143,7 +143,6 @@ void drawCalendar(){
   ellipse(0, 0, outerRadius*2, outerRadius*2);
 
 
- 
   fill(255);
   text("2018 "  + monthNames[month[dayindex]-1] + " " + day[dayindex], -width*0.5+8, -height*0.5+20);
   
@@ -212,6 +211,25 @@ void drawCalendar(){
     fill(planetColors[i*3+0], planetColors[i*3+1], planetColors[i*3+2]);
     ellipse(au(planetDistance[dayindex][i]) * -cos(planetLongitude[dayindex][i]), 
             au(planetDistance[dayindex][i]) * sin(planetLongitude[dayindex][i]), pRadius, pRadius);
+  }
+  
+  int ONIONDAYS = 200;
+  for(int i = -ONIONDAYS; i < ONIONDAYS; i++){
+    float alpha = 255*cos(float(i)/ONIONDAYS*PI);
+    stroke(255, 255, 255, alpha);
+    int i0 = dayindex + i;
+    int i1 = dayindex + i + 1;
+    if(i0 < 0) i0 = 0;
+    if(i1 < 0) i1 = 0;
+    if(i0 >= table.getRowCount()) i0 = table.getRowCount()-1;
+    if(i1 >= table.getRowCount()) i1 = table.getRowCount()-1;
+    for(int p = 0; p < planetNames.length; p++){
+      //stroke(planetColors[p*3+0], planetColors[p*3+1], planetColors[p*3+2]);
+      line(au(planetDistance[i0][p]) * -cos(planetLongitude[i0][p]), 
+           au(planetDistance[i0][p]) * sin(planetLongitude[i0][p]), 
+           au(planetDistance[i1][p]) * -cos(planetLongitude[i1][p]), 
+           au(planetDistance[i1][p]) * sin(planetLongitude[i1][p]) );
+    }
   }
  
 }
