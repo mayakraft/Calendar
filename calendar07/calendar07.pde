@@ -62,7 +62,7 @@ void draw(){
 }
 
 void importCSV(){
-  table = loadTable("../2018-geocentric.csv", "header");
+  table = loadTable("../2019.csv", "header");
 
   year = new int[table.getRowCount()];
   month = new int[table.getRowCount()];
@@ -89,7 +89,7 @@ void importCSV(){
     moonLongitude[i] = row.getFloat("MoonLongitude") * PI/180;
     moonLatitude[i] = row.getFloat("MoonLatitude") * PI/180;
     moonDistance[i] = row.getFloat("MoonDistance");
-    moonPhase[i] = row.getFloat("Phase") * PI/180;
+    moonPhase[i] = row.getFloat("MoonPhase") * PI/180;
     sunLongitude[i] = row.getFloat("SunLongitude") * PI/180;
     sunDistance[i] = row.getFloat("SunDistance");
     daylightHoursNYC[i] = row.getFloat("Daylight");
@@ -144,7 +144,7 @@ void drawCalendar(){
 
 
   fill(255);
-  text("2018 "  + monthNames[month[dayindex]-1] + " " + day[dayindex], -width*0.5+8, -height*0.5+20);
+  text(year[dayindex] + " "  + monthNames[month[dayindex]-1] + " " + day[dayindex], -width*0.5+8, -height*0.5+20);
   
   // rotate everything
     rotate(9.0/365.0*PI*2);

@@ -24,7 +24,7 @@ void setup(){
 }
 
 void importCSV(){
-  table = loadTable("../2018.csv", "header");
+  table = loadTable("../2019.csv", "header");
   
   year = new int[table.getRowCount()];
   month = new int[table.getRowCount()];
@@ -44,12 +44,12 @@ void importCSV(){
     month[i] = row.getInt("Month");
     day[i] = row.getInt("Day");
     hour[i] = row.getInt("Hour");
-    moonAngle[i] = row.getFloat("Moon") * PI/180;
-    sunAngle[i] = row.getFloat("Sun") * PI/180;
+    moonAngle[i] = row.getFloat("MoonLongitude") * PI/180;
+    sunAngle[i] = row.getFloat("SunLongitude") * PI/180;
     daylightHours[i] = row.getFloat("Daylight");
-    moonPhase[i] = row.getFloat("Phase") * PI/180;
+    moonPhase[i] = row.getFloat("MoonPhase") * PI/180;
     for(int p = 0; p < planetNames.length; p++){
-      planetAngle[i][p] = row.getFloat(planetNames[p]) * PI / 180;
+      planetAngle[i][p] = row.getFloat(planetNames[p]+"Longitude") * PI / 180;
     }
     i++;
   }
