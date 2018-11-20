@@ -6,7 +6,7 @@ String planetNames[] = {"Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Ne
 static int colors[] = {192,192,192,206,172,113,172,81,40,186,130,83,253,196,126,149,188,198,98,119,226,169,149,146};
 float moonEventAngles[] = {0.0, 1.570796326794897, 3.141592653589793, 4.71238898038469};
 String moonEventDescriptions[] = {"New", "First Quarter", "Full", "Third Quarter" };
-
+String zodiacNames[] = {"Capricorn", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius"};
 int year[];
 int month[];
 int day[];
@@ -94,10 +94,11 @@ void drawCalendar(){
   fill(40);
   strokeWeight(0);
   noStroke();
-  //rect(0, 0, width, height);
+  rect(0, 0, width, height);
 
   translate(width*0.5, height*0.5);
-  rotate(-9.0/365.0*PI*2);
+  //rotate(-9.0/365.0*PI*2);
+  rotate(-1.0/24.0*PI*2);
   
   float innerR = 100;
   float outerR = 280;
@@ -234,6 +235,11 @@ void drawCalendar(){
       line(cos(planetAngle[i-1][p])*lastCalendarR, sin(planetAngle[i-1][p])*lastCalendarR, cos(planetAngle[i][p])*calendarR, sin(planetAngle[i][p])*calendarR);
     }
   }
+  
+  // text
+  fill(222,210,33);
+
+  
 
 
 }

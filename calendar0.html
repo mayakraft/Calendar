@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<title></title>
+<style>
+html,body{ height:100%; }
+body{
+	margin: 0;
+	background-color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+svg{
+	width: 90vmin;
+	height: 90vmin;
+}
+</style>
+<script type="text/javascript" src="../svg.js"></script>
+<script type="" src="load-csv.js"></script>
+
+<script>
+let w = 800;
+let h = 800;
+let sketch = SVG.View(w, h);
+
+loadCSV("2019.csv", function(data){
+	console.log(data);
+
+	let backRect = SVG.rect(0,0,w,h);
+	SVG.setAttribute(backRect, "fill", "#444");
+	sketch.appendChild(backRect);
+
+});
+
+sketch.onMouseDown = function(){ sketch.download(); }
+
+</script>

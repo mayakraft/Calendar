@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<title></title>
+<style>
+html,body{ height:100%; }
+body{
+	margin: 0;
+	background-color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+svg{
+	width: 90vmin;
+	height: 90vmin;
+}
+</style>
+<script type="text/javascript" src="../svg.js"></script>
+<script type="" src="load-csv.js"></script>
+
+<script>
+let w = 700;
+let h = 700;
+let sketch = SVG.View(w, h);
+sketch.onMouseDown = function(){ sketch.download(); }
+
+loadCSV("2019.csv", function(data){
+
+	let planetNames = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+	let moonEventAngles = [0.0, Math.PI*0.5, Math.PI, Math.PI*1.5];
+	let moonEventDescriptions = ["New", "First Quarter", "Full", "Third Quarter"];
+	let zodiacNames = ["Capricorn", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius"];
+
+	let year = data.map(d => d["year"]);
+	let month = data.map(d => d["month"]);
+	let day = data.map(d => d["day"]);
+	let hour = data.map(d => d["hour"]);
+	let minute = data.map(d => d["minute"]);
+	let second = data.map(d => d["second"]);
+	let sunLongitude = data.map(d => d["sunLongitude"] / 180 * Math.PI);
+	let sunDistance = data.map(d => d["sunDistance"]);
+	let zodiac = data.map(d => d["zodiac"]);
+	let daylight = data.map(d => d["daylight"]);
+	let mercuryLongitude = data.map(d => d["mercuryLongitude"] / 180 * Math.PI);
+	let mercuryLatitude = data.map(d => d["mercuryLatitude"] / 180 * Math.PI);
+	let mercuryDistance = data.map(d => d["mercuryDistance"]);
+	let venusLongitude = data.map(d => d["venusLongitude"] / 180 * Math.PI);
+	let venusLatitude = data.map(d => d["venusLatitude"] / 180 * Math.PI);
+	let venusDistance = data.map(d => d["venusDistance"]);
+	let marsLongitude = data.map(d => d["marsLongitude"] / 180 * Math.PI);
+	let marsLatitude = data.map(d => d["marsLatitude"] / 180 * Math.PI);
+	let marsDistance = data.map(d => d["marsDistance"]);
+	let jupiterLongitude = data.map(d => d["jupiterLongitude"] / 180 * Math.PI);
+	let jupiterLatitude = data.map(d => d["jupiterLatitude"] / 180 * Math.PI);
+	let jupiterDistance = data.map(d => d["jupiterDistance"]);
+	let saturnLongitude = data.map(d => d["saturnLongitude"] / 180 * Math.PI);
+	let saturnLatitude = data.map(d => d["saturnLatitude"] / 180 * Math.PI);
+	let saturnDistance = data.map(d => d["saturnDistance"]);
+	let uranusLongitude = data.map(d => d["uranusLongitude"] / 180 * Math.PI);
+	let uranusLatitude = data.map(d => d["uranusLatitude"] / 180 * Math.PI);
+	let uranusDistance = data.map(d => d["uranusDistance"]);
+	let neptuneLongitude = data.map(d => d["neptuneLongitude"] / 180 * Math.PI);
+	let neptuneLatitude = data.map(d => d["neptuneLatitude"] / 180 * Math.PI);
+	let neptuneDistance = data.map(d => d["neptuneDistance"]);
+	let plutoLongitude = data.map(d => d["plutoLongitude"] / 180 * Math.PI);
+	let plutoLatitude = data.map(d => d["plutoLatitude"] / 180 * Math.PI);
+	let plutoDistance = data.map(d => d["plutoDistance"]);
+	let moonLongitude = data.map(d => d["moonLongitude"] / 180 * Math.PI);
+	let moonLatitude = data.map(d => d["moonLatitude"] / 180 * Math.PI);
+	let moonDistance = data.map(d => d["moonDistance"]);
+	let moonPhase = data.map(d => d["moonPhase"] / 180 * Math.PI);
+
+	let planets = [
+		{name: "Mercury", longitude: mercuryLongitude, distance: mercuryDistance,
+			color: "rgb(192,192,192)"},
+		{name: "Venus", longitude: venusLongitude, distance: venusDistance,
+			color: "rgb(206,172,113)"},
+		{name: "Mars", longitude: marsLongitude, distance: marsDistance,
+			color: "rgb(172,81,40)"},
+		{name: "Jupiter", longitude: jupiterLongitude, distance: jupiterDistance,
+			color: "rgb(186,130,83)"},
+		{name: "Saturn", longitude: saturnLongitude, distance: saturnDistance,
+			color: "rgb(253,196,126)"},
+		{name: "Uranus", longitude: uranusLongitude, distance: uranusDistance,
+			color: "rgb(149,188,198)"},
+		{name: "Neptune", longitude: neptuneLongitude, distance: neptuneDistance,
+			color: "rgb(98,119,226)"},
+		{name: "Pluto", longitude: plutoLongitude, distance: plutoDistance,
+			color: "rgb(169,149,146)"}
+	];
+
+	// translate(width*0.5, height*0.5);
+	// rotate(-1.0/24.0*Math.PI*2);
+
+	let innerR = 100;
+	let outerR = 280;
+
+	let backRect = SVG.rect(0, 0, w, h);
+	SVG.setAttribute(backRect, "fill", "#222");
+	sketch.appendChild(backRect);
+
+	let layer = SVG.group();
+	SVG.setAttribute(layer, "id", "transform-layer");
+	let translateString = "translate(" + (w*0.5) + " " + (h*0.5) + ")";
+	let rotateString = 	"rotate(" + (-1/24*360) +")";
+	let transform = translateString + " " + rotateString;
+	SVG.setAttribute(layer, "transform", transform);
+	sketch.appendChild(layer);
+
+	let textLayer = SVG.group();
+	SVG.setAttribute(textLayer, "transform", translateString);
+	sketch.appendChild(textLayer);
+
+	let gridLayer = SVG.group();
+	let moonLayer = SVG.group();
+	let sunLayer = SVG.group();
+	let planetsLayer = SVG.group();
+	SVG.setAttribute(gridLayer, "id", "grid");
+	SVG.setAttribute(moonLayer, "id", "moon");
+	SVG.setAttribute(sunLayer, "id", "sun");
+	SVG.setAttribute(planetsLayer, "id", "planets");
+	layer.appendChild(gridLayer);
+	layer.appendChild(moonLayer);
+	layer.appendChild(sunLayer);
+	layer.appendChild(planetsLayer);
+
+	// // outer measurement lines
+	// Array.from(Array(960)).forEach((_,i) =>{
+	// 	let r2, a = i / 960 * Math.PI*2;
+	// 	if      (i % 16 == 0){ r2 = outerR + 10;    }
+	// 	else if (i % 8 == 0) { r2 = outerR + 6.66;  }
+	// 	else if (i % 4 == 0) { r2 = outerR + 4.444; }
+	// 	else if (i % 2 == 0) { r2 = outerR + 2.888; }
+	// 	else                 { r2 = outerR + 1.9;   }
+	// 	let l = SVG.line(
+	// 		Math.cos(a)*outerR,
+	// 		Math.sin(a)*outerR,
+	// 		Math.cos(a)*r2,
+	// 		Math.sin(a)*r2);
+	// 	SVG.setAttribute(l, "stroke", "#fff");
+	// 	gridLayer.appendChild(l);
+	// });
+	// // 12 month-dividing circles
+	// for(let i = 12; i >= 0; i--){
+	//    let r = innerR + (outerR-innerR) * i/12.0;
+	//    let circle = SVG.circle(0, 0, r);
+	//    SVG.setAttribute(circle, "stroke", "#fff");
+	//    SVG.setAttribute(circle, "fill", "none");
+	//    gridLayer.appendChild(circle);
+	// }
+	// // 12 zodiac-dividing lines
+	// for(let i = 0; i < Math.PI*2; i += Math.PI*2/12 ){
+	// 	let l = SVG.line(Math.cos(i)*innerR, Math.sin(i)*innerR, Math.cos(i)*outerR, Math.sin(i)*outerR);
+	// 	SVG.setAttribute(l, "stroke", "#fff")
+	// 	gridLayer.appendChild(l);
+	// }
+
+	// draw moon
+	for(let i = 1; i < moonLongitude.length; i++) {
+		let calendarR = innerR + (outerR-innerR) * i / moonLongitude.length;
+		let lastCalendarR = innerR + (outerR-innerR) * (i-1) / moonLongitude.length;
+		let phase0_1 = Math.cos(moonPhase[i])*0.5+0.5;
+		let moonLine = SVG.line(
+			Math.cos(moonLongitude[i-1])*lastCalendarR,
+			Math.sin(moonLongitude[i-1])*lastCalendarR,
+			Math.cos(moonLongitude[i])*calendarR,
+			Math.sin(moonLongitude[i])*calendarR
+		);
+		// let gray = 255 - phase0_1 * (255-33) + 33;
+		let gray = 200 - phase0_1 * (200-20) + 20;
+		SVG.setAttribute(moonLine, "stroke-width", 6 - phase0_1*5);
+		SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+		SVG.setAttribute(moonLine, "stroke-linecap", "round");
+		moonLayer.appendChild(moonLine);
+	}
+
+	// draw sun
+	for(let i = 1; i < sunLongitude.length; i++) {
+		let calendarR = innerR + (outerR-innerR) * i / sunLongitude.length;
+		let lastCalendarR = innerR + (outerR-innerR) * (i-1) / sunLongitude.length;
+		let sunLine = SVG.line(
+			Math.cos(sunLongitude[i-1]) * lastCalendarR,
+			Math.sin(sunLongitude[i-1]) * lastCalendarR,
+			Math.cos(sunLongitude[i])*calendarR,
+			Math.sin(sunLongitude[i])*calendarR
+		);
+		SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9.1)*2);
+		SVG.setAttribute(sunLine, "stroke-linecap", "round");
+		SVG.setAttribute(sunLine, "stroke", "rgb(222,210,33)");
+		sunLayer.appendChild(sunLine);
+	}
+
+	// draw planets
+	// let polylinePoints = planets.map((p, pi) => 
+	// 	p.longitude.map((l,li,arr) => {
+	// 		let radius = innerR + (outerR-innerR) * li/arr.length;
+	// 		return [Math.cos(l)*radius, Math.sin(l)*radius];
+	// 	})
+	// );
+	// polylinePoints.forEach((p,i) =>{
+	// 	let planetLine = SVG.polyline(p);
+	// 	SVG.setAttribute(planetLine, "stroke", planets[i].color);
+	// 	SVG.setAttribute(planetLine, "fill", "none");
+	// 	SVG.setAttribute(planetLine, "stroke-width", 2);
+	// 	planetsLayer.appendChild(planetLine);
+
+	// });
+
+	let tStyleZodiac = "fill:rgb(222,210,33); font-family:Avenir Next; font-size:10px; text-anchor: middle;";
+	zodiacNames.forEach((zodiac,i) => {
+		let str = zodiac.toUpperCase();
+		let text = SVG.text(str, 0, 0);
+		let transform = "rotate("+i/12*360+") translate(0 "+(-outerR - 20)+")"
+		SVG.setAttribute(text, "style", tStyleZodiac);
+		SVG.setAttribute(text, "transform", transform);
+		textLayer.appendChild(text);
+	})
+	let tStyleYear = "fill:rgb(222,210,33); font-family:Avenir Next; font-size:14px; text-anchor: middle;";
+
+	let lastYearText = SVG.text(parseInt(year[0]) - 1, 0, 0);
+	let lastTransform = "translate(0 "+(-innerR + 20)+")"
+	SVG.setAttribute(lastYearText, "style", tStyleYear);
+	SVG.setAttribute(lastYearText, "transform", lastTransform);
+	textLayer.appendChild(lastYearText);
+
+	let nextYearText = SVG.text(parseInt(year[0]) + 1, 0, 0);
+	let nextTransform = "translate(0 "+(-outerR)+")"
+	SVG.setAttribute(nextYearText, "style", tStyleYear);
+	SVG.setAttribute(nextYearText, "transform", nextTransform);
+	textLayer.appendChild(nextYearText);
+
+});
+
+
+</script>
