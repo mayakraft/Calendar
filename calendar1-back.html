@@ -134,12 +134,12 @@ loadCSV("2019.csv", function(data){
 	sketch.appendChild(textLayer);
 
 	// outer measurement lines
-	Array.from(Array(960)).forEach((_,i) =>{
-		let r2, a = i / 960 * Math.PI*2;
-		if      (i % 16 == 0){ r2 = outerR + 10;    }
-		else if (i % 8 == 0) { r2 = outerR + 6.66;  }
-		else if (i % 4 == 0) { r2 = outerR + 4.444; }
-		else if (i % 2 == 0) { r2 = outerR + 2.888; }
+	Array.from(Array(720)).forEach((_,i) =>{
+		let r2, a = i / 720 * Math.PI*2;
+		if      (i % 30 == 0){ r2 = outerR + 10;    }
+		else if (i % 15 == 0) { r2 = outerR + 6.66;  }
+		else if (i % 5 == 0) { r2 = outerR + 4.444; }
+		else if (i % 3 == 0) { r2 = outerR + 2.888; }
 		else                 { r2 = outerR + 1.9;   }
 		let l = SVG.line(
 			Math.cos(a)*outerR,

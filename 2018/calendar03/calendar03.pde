@@ -1,7 +1,7 @@
 import processing.pdf.*;
 
 Table table;
-String planetNames[] = {"Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"};
+String planetNames[] = {"mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto"};
 static int colors[] = {
   129,127,130,  // mercury
   239,194,107, // venus
@@ -35,7 +35,7 @@ void setup(){
 }
 
 void importCSV(){
-  table = loadTable("../2019.csv", "header");
+  table = loadTable("../../2019.csv", "header");
   
   year = new int[table.getRowCount()];
   month = new int[table.getRowCount()];
@@ -51,14 +51,14 @@ void importCSV(){
   int i = 0;
   for (TableRow row : table.rows()) {
     //String zodiac = row.getString("zodiac");
-    year[i] = row.getInt("Year");
-    month[i] = row.getInt("Month");
-    day[i] = row.getInt("Day");
-    hour[i] = row.getInt("Hour");
-    moonAngle[i] = row.getFloat("MoonLongitude") * PI/180;
-    sunAngle[i] = row.getFloat("SunLongitude") * PI/180;
-    daylightHours[i] = row.getFloat("Daylight");
-    moonPhase[i] = row.getFloat("MoonPhase") * PI/180;
+    year[i] = row.getInt("year");
+    month[i] = row.getInt("month");
+    day[i] = row.getInt("day");
+    hour[i] = row.getInt("hour");
+    moonAngle[i] = row.getFloat("moonLongitude") * PI/180;
+    sunAngle[i] = row.getFloat("sunLongitude") * PI/180;
+    daylightHours[i] = row.getFloat("daylight");
+    moonPhase[i] = row.getFloat("moonPhase") * PI/180;
     for(int p = 0; p < planetNames.length; p++){
       planetAngle[i][p] = row.getFloat(planetNames[p]+"Longitude") * PI / 180;
     }

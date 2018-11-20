@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<title></title>
+<style>
+html,body{ height:100%; }
+body{
+	margin: 0;
+	background-color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+svg{
+	width: 90vmin;
+	height: 90vmin;
+}
+</style>
+<script type="text/javascript" src="../svg.js"></script>
+<script type="" src="load-csv.js"></script>
+
+<script>
+let w = 300;
+let h = 2200;
+let sketch = SVG.View(w, h);
+sketch.onMouseDown = function(){ sketch.download(); }
+
+loadCSV("2019.csv", function(data){
+
+	let year = data.map(d => d["year"]);
+	let month = data.map(d => d["month"]);
+	let day = data.map(d => d["day"]);
+	let hour = data.map(d => d["hour"]);
+	let minute = data.map(d => d["minute"]);
+	let second = data.map(d => d["second"]);
+	let moonLongitude = data.map(d => d["moonLongitude"] / 180 * Math.PI);
+	let moonLatitude = data.map(d => d["moonLatitude"] / 180 * Math.PI);
+	let moonPhase = data.map(d => d["moonPhase"] / 180 * Math.PI);
+
+	let newMoons = [
+		{month:1, day:6},
+		{month:2, day:4},
+		{month:3, day:6},
+		{month:4, day:5},
+		{month:5, day:4},
+		{month:6, day:3},
+		{month:7, day:2},
+		{month:8, day:1},
+		{month:8, day:30},
+		{month:9, day:28},
+		{month:10, day:28},
+		{month:11, day:26},
+		{month:12, day:26}
+	];
+
+	let fullMoons = [
+		{month:1, day:21},
+		{month:2, day:19},
+		{month:3, day:21},
+		{month:4, day:19},
+		{month:5, day:18},
+		{month:6, day:17},
+		{month:7, day:16},
+		{month:8, day:15},
+		{month:9, day:14},
+		{month:10, day:13},
+		{month:11, day:12},
+		{month:12, day:12}
+	];
+	
+
+	let backRect = SVG.rect(0, 0, w, h);
+	SVG.setAttribute(backRect, "fill", "#222");
+	sketch.appendChild(backRect);
+
+	let rowH = 32;
+	let colW = 28;
+	let r = 12
+
+	let xpad = (w - colW*6) / 2;
+	let ypad = (h - rowH*(64+2)) / 2;
+
+	// moon
+	let dayCount = 2;
+	for(let i = 0; i < moonLongitude.length; i++){
+		if(hour[i] == 18){
+			let week = Math.floor(dayCount/7.0);
+			let x = xpad + (dayCount%7) * colW;
+			let y = ypad + week * rowH + month[i]*rowH;
+			if(isFull(i)) {
+				let moonLine = SVG.circle(x,y,r);
+				SVG.setAttribute(moonLine, "fill", "none");
+				SVG.setAttribute(moonLine, "stroke", "#c8c8c8");
+				SVG.setAttribute(moonLine, "stroke-weight", 1);
+				sketch.appendChild(moonLine);
+				let moonCenter = SVG.circle(x,y,r-2);
+				SVG.setAttribute(moonCenter, "fill", "#c8c8c8");
+				SVG.setAttribute(moonCenter, "stroke", "none");
+				sketch.appendChild(moonCenter);
+			}
+			else if(isNew(i)) {
+				let moonLine = SVG.circle(x,y,r);
+				SVG.setAttribute(moonLine, "fill", "none");
+				SVG.setAttribute(moonLine, "stroke", "#c8c8c8");
+				SVG.setAttribute(moonLine, "stroke-weight", 1);
+				sketch.appendChild(moonLine);
+			}
+			else{ 
+				let moonLine = drawMoon(x, y, r, moonPhase[i]);
+				SVG.setAttribute(moonLine, "fill", "#c8c8c8");
+				SVG.setAttribute(moonLine, "stroke", "none");
+				// SVG.setAttribute(moonLine, "stroke-linecap", "round");
+				sketch.appendChild(moonLine);
+			}
+
+			if(day[i] == 1){
+				// let lineX = xpad + ((dayCount-1)%7 + dayCount%7)*0.5 / 7.0 * (w-pad*2);
+				let lineX = xpad + (dayCount%7) * colW;
+				// let l0 = SVG.line(lineX, y - rowH*.5, lineX, y + rowH*0.5);
+				// let l1 = SVG.line(xpad, y + rowH*.5, lineX, y + rowH*0.5);
+				// let l2 = SVG.line(lineX, y - rowH*.5, w - colW, y - rowH*0.5);
+				// SVG.setAttribute(l0, "stroke", "#c8c8c8");
+				// SVG.setAttribute(l1, "stroke", "#c8c8c8");
+				// SVG.setAttribute(l2, "stroke", "#c8c8c8");
+				// sketch.appendChild(l0);
+				// sketch.appendChild(l1);
+				// sketch.appendChild(l2);
+			}
+			dayCount+=1;
+		}
+	}
+  
+
+	// let textStyle = "fill:#c8c8c8; font-family:Avenir Next;font-size:10px; text-anchor: middle;";
+	// let yearText = SVG.text(parseInt(year[0]), w*0.5, 40);
+	// SVG.setAttribute(yearText, "style", textStyle);
+	// sketch.appendChild(yearText);
+
+	function isFull(i){
+		return fullMoons.map(el => el.month == month[i] && el.day == day[i])
+			.reduce((a,b) => a || b, false);
+	}
+	function isNew(i){
+		return newMoons.map(el => el.month == month[i] && el.day == day[i])
+			.reduce((a,b) => a || b, false);
+	}
+
+});
+
+
+function drawMoon(x, y, r, phase){
+	while(phase < 0){ phase += Math.PI*2; }
+	while(phase > Math.PI*2){ phase -= Math.PI*2; }
+	let ph1 = 1;
+	let ph2 = -1;
+	if(phase < Math.PI){ ph2 = Math.cos(phase); }
+	if(phase > Math.PI){ ph1 = -Math.cos(phase); }
+	let arr0 = Array.from(Array(24)).map((a,i) => i*Math.PI/24.0);
+	let arr1 = Array.from(Array(24)).map((a,i) => (i+1)*Math.PI/24.0).reverse();
+	let points = [];
+	points = points.concat( arr0.map(a => ([r*Math.sin(a)*ph1, r*Math.cos(a)])) );
+	points = points.concat( arr1.map(a => ([r*Math.sin(a)*ph2, r*Math.cos(a)])) );
+	let poly = SVG.polygon(points);
+	// SVG.setAttribute(poly, "fill", "rgb(200, 198, 199)");
+	// SVG.setAttribute(poly, "stroke", "none");
+	let translateString = "translate(" + x.toFixed(4) + " " + y.toFixed(4) + ")";
+	let rotateString = 	"rotate(" + (Math.PI*0.2 - Math.PI/2)/Math.PI*180 + ")";
+	// rotate(PI*0.2);
+	let transform = [translateString, rotateString].join(" ");
+	SVG.setAttribute(poly, "transform", transform);
+	return poly;
+	// translate(x,y);
+	// rotate(Math.PI*0.2 - Math.PI/2);
+}
+
+</script>
