@@ -136,10 +136,10 @@ loadCSV("2019.csv", function(data){
 	// outer measurement lines
 	Array.from(Array(720)).forEach((_,i) =>{
 		let r2, a = i / 720 * Math.PI*2;
-		if      (i % 30 == 0){ r2 = outerR + 10;    }
-		else if (i % 15 == 0) { r2 = outerR + 6.66;  }
-		else if (i % 5 == 0) { r2 = outerR + 4.444; }
-		else if (i % 3 == 0) { r2 = outerR + 2.888; }
+		if      (i % 20 == 0){ r2 = outerR + 10;    }
+		else if (i % 10 == 0){ r2 = outerR + 6.66;  }
+		// else if (i % 2 == 0) { r2 = outerR + 4.444; }
+		else if (i % 2 == 0) { r2 = outerR + 2.888; }
 		else                 { r2 = outerR + 1.9;   }
 		let l = SVG.line(
 			Math.cos(a)*outerR,
@@ -147,6 +147,7 @@ loadCSV("2019.csv", function(data){
 			Math.cos(a)*r2,
 			Math.sin(a)*r2);
 		SVG.setAttribute(l, "stroke", "#777");
+		SVG.setAttribute(l, "stroke-width", 0.666);
 		gridLayer.appendChild(l);
 	});
 	// // 12 month-dividing circles
@@ -161,6 +162,7 @@ loadCSV("2019.csv", function(data){
 	for(let i = 0; i < Math.PI*2; i += Math.PI*2/12 ){
 		let l = SVG.line(Math.cos(i)*innerR, Math.sin(i)*innerR, Math.cos(i)*outerR, Math.sin(i)*outerR);
 		SVG.setAttribute(l, "stroke", "#777")
+		SVG.setAttribute(l, "stroke-width", 0.666);
 		gridLayer.appendChild(l);
 	}
 
@@ -289,11 +291,12 @@ loadCSV("2019.csv", function(data){
 
 
 
-	let tStyleZodiac = "fill:black; font-family:Avenir Next; font-size:6px; text-anchor: middle;";
+	let tStyleZodiac = "fill:black; font-family:Avenir Next; font-size:7px; text-anchor: middle;";
 	zodiacNames.forEach((zodiac,i) => {
-		let str = zodiac.toUpperCase();
+		// let str = zodiac.toUpperCase();
+		let str = zodiac;
 		let text = SVG.text(str, 0, 0);
-		let transform = "rotate("+(-i/12*360)+") translate(0 "+(-outerR - 11)+")"
+		let transform = "rotate("+(-i/12*360)+") translate(0 "+(-innerR + 10)+")"
 		SVG.setAttribute(text, "style", tStyleZodiac);
 		SVG.setAttribute(text, "transform", transform);
 		noTiltLayer.appendChild(text);
@@ -347,17 +350,19 @@ loadCSV("2019.csv", function(data){
 		let s = "<tspan x='2px' dy='1.2em'>"+str+"</tspan><tspan x='2px' dy='1.1em'>"+indexToDate(el.i)+"</tspan>";
 		let text = SVG.text(s, 0, 0);
 		let r = outerR + 40 + el.r;
-		let a = -el.angle/Math.PI*180+30;
+		let roundedAngle = Math.round((el.angle/Math.PI*180)/360*720)/720*360 *Math.PI/180;
+		let a = -roundedAngle/Math.PI*180+30;
 		let transform = "rotate("+(a-90)+") translate(0 "+(-r)+")"
 		SVG.setAttribute(text, "style", textStyle);
 		SVG.setAttribute(text, "transform", transform);
 		textLayer.appendChild(text);
 		let l = SVG.line(
-			Math.cos((a+180)/180*Math.PI)*(outerR+18),
-			Math.sin((a+180)/180*Math.PI)*(outerR+18),
+			Math.cos((a+180)/180*Math.PI)*(outerR),
+			Math.sin((a+180)/180*Math.PI)*(outerR),
 			Math.cos((a+180)/180*Math.PI)*(r-3),
 			Math.sin((a+180)/180*Math.PI)*(r-3));
 		SVG.setAttribute(l, "stroke", "#777");
+		SVG.setAttribute(l, "stroke-width", 0.666);
 		textLayer.appendChild(l);
 
 	});
