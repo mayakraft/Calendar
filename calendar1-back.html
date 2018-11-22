@@ -360,7 +360,7 @@ loadCSV("2019.csv", function(data){
 	// add equinoxes
 	solstice.push( 7 + parseInt((solstice[1] - solstice[0]) / 2) + solstice[0]);
 	solstice.push( -14+ parseInt(solstice[2] - daylight.length*0.5) );
-	// those needed +/- 7 adjustment idk why
+	// those needed +/- 7 adjustment b/c ellipses i guess
 	solstice.forEach(i => {
 		let calendarR = innerR + (outerR-innerR) * i / sunLongitude.length;
 		let x = Math.cos(sunLongitude[i])*calendarR;
@@ -400,7 +400,7 @@ loadCSV("2019.csv", function(data){
 		{s:false, r:15, text:"Venus-Saturn conjugation", i:194, angle: saturnLongitude[194]},
 		{s:false,r:0, text:"Venus-Saturn conjugation", i:1378, angle: saturnLongitude[1378]},
 		{s:true, r:-15, text:"Venus-Mars conjugation", i:942, angle: marsLongitude[942]},
-		{s:true, r:0, text:"Mars at its furthest from Earth", i:978, angle: marsLongitude[978]},
+		{s:true, r:0, text:"Mars-Earth maximum separation", i:978, angle: marsLongitude[978]},
 
 	].forEach(el => {
 		let str = el.text;//.toUpperCase();
@@ -433,7 +433,7 @@ loadCSV("2019.csv", function(data){
 	fullMoons.forEach(el => {
 		let r = innerR + (outerR-innerR) * el.i / moonLongitude.length;
 		let a = -moonLongitude[el.i]/Math.PI*180+30 - 2;
-		let transform = "rotate("+(a-90)+") translate(0 "+(-r+2)+")"
+		let transform = "rotate("+(a-90)+") translate(0 "+(-r+2.2)+")"
 		let radius = innerR + (outerR-innerR) * el.i / moonLongitude.length;
 		let x = 0;//Math.cos(moonLongitude[el.i]) * radius;
 		let y = 0;//Math.sin(moonLongitude[el.i]) * radius;
