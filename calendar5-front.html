@@ -105,7 +105,7 @@ loadCSV("2019.csv", function(data){
 	let layer = SVG.group();
 	SVG.setAttribute(layer, "id", "transform-layer");
 	let translateString = "translate(" + (w*0.5) + " " + (h*0.5) + ")";
-	let rotateString = 	"rotate(90)";
+	let rotateString = 	"rotate(-90)";
 	let reflectString = "scale(1 1)";
 	let transform = [translateString, reflectString, rotateString].join(" ");
 	SVG.setAttribute(layer, "transform", transform);
@@ -292,17 +292,17 @@ loadCSV("2019.csv", function(data){
 		dataLayer.appendChild(text);
 	})
 
-	// let zodiacStyle = "fill:rgb(222,210,33); font-family:Arial; font-size:12px; text-anchor: middle;";
-	// zodiacSymbols.forEach((zodiac,i) => {
-	// 	let unicode = zodiac.charCodeAt(0);
-	// 	// let text = SVG.text(zodiac, 0, 0);
-	// 	let text = SVG.text('&#' + unicode, 0, 0);
-	// 	let radius = innerR + (outerR-innerR)*(i+0.9)/12;
-	// 	let transform = "rotate(-90) translate(0 "+radius+")"
-	// 	SVG.setAttribute(text, "style", zodiacStyle);
-	// 	SVG.setAttribute(text, "transform", transform);
-	// 	dataLayer.appendChild(text);
-	// });
+	let zodiacStyle = "fill:rgb(222,210,33); font-family:Arial Unicode MS; font-size:12px; text-anchor: middle;";
+	zodiacSymbols.forEach((zodiac,i) => {
+		let unicode = zodiac.charCodeAt(0);
+		// let text = SVG.text(zodiac, 0, 0);
+		let text = SVG.text('&#' + unicode, 0, 0);
+		let radius = -innerR - (outerR-innerR)*(i+0.2)/12;
+		let transform = "rotate(90) translate(0 "+radius+")"
+		SVG.setAttribute(text, "style", zodiacStyle);
+		SVG.setAttribute(text, "transform", transform);
+		dataLayer.appendChild(text);
+	});
 
 });
 
