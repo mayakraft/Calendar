@@ -126,9 +126,9 @@ loadCSV("2019.csv", function(data){
 	SVG.setAttribute(planetsLayer, "id", "planets");
 	SVG.setAttribute(dataLayer, "id", "data");
 	layer.appendChild(gridLayer);
+	layer.appendChild(planetsLayer);
 	layer.appendChild(moonLayer);
 	layer.appendChild(sunLayer);
-	layer.appendChild(planetsLayer);
 	layer.appendChild(dataLayer);
 
 	// outer measurement lines
@@ -147,7 +147,7 @@ loadCSV("2019.csv", function(data){
 		SVG.setAttribute(arc, "stroke", "white");
 		SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
 		SVG.setAttribute(arc, "stroke-linecap", "round");
-		gridLayer.appendChild(arc);
+		// gridLayer.appendChild(arc);
 	}
 	// let monthPct = 0;
 	// for(let i = 0; i <= 12; i+=1){
@@ -174,41 +174,8 @@ loadCSV("2019.csv", function(data){
 		);
 		SVG.setAttribute(gridLine, "stroke", "#555");
 		SVG.setAttribute(gridLine, "stroke-width", 0.5);
-		gridLayer.appendChild(gridLine);
+		// gridLayer.appendChild(gridLine);
 	});
-
-
-	// moon
-	for(let i = 1; i < moonLongitude.length; i++) {
-		//strokeWeight( (1.0 - Math.cos(moonPhase[i])*0.5+0.5)*10 );
-		let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
-		let lastCalendarA = pipad((i-1)/moonLongitude.length*2*Math.PI);
-		let lon = lonSh(moonLongitude[i]);
-		let lon_1 = lonSh(moonLongitude[i-1]);
-		let lon_2 = lonSh(moonLongitude[i-2]);
-		let moonR = innerR + (outerR-innerR) * lon/(2*Math.PI);
-		let lastMoonR = innerR + (outerR-innerR) * lon_1/(2*Math.PI);
-		let gray = 30 + 192 - (Math.sin(lonSh(moonPhase[i]))*0.5+0.5)*192;
-		if(i > 1){
-			let dR = moonR - lastMoonR;
-			let dLastR = lastMoonR - (innerR + (outerR-innerR)*lon_2/(2*Math.PI));
-			if(dR > 0 && dLastR <= 0){
-				// let moonLine = SVG.line(0, 0, Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR);
-				// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-				// moonLayer.appendChild(moonLine);
-			}
-		}
-		if( (lon > 5.7 && lon_1 < .5) || (lon_1 > 5.7 && lon < .5) ){
-		} else{
-			let moonLine = SVG.line(
-				Math.cos(lastCalendarA)*lastMoonR,
-				Math.sin(lastCalendarA)*lastMoonR,
-				Math.cos(calendarA)*moonR,
-				Math.sin(calendarA)*moonR);
-			SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-			moonLayer.appendChild(moonLine);
-		}
-	}
 
 	// sun
 	for(let i = 1; i < daylight.length; i++) {
@@ -233,31 +200,67 @@ loadCSV("2019.csv", function(data){
 		}
 	}
 
-	// moon
-	for(let i = 1; i < moonLongitude.length; i++) {
-		for(let m = 0; m < 8; m++){
-			let phase = -1;
-			if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
-			if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
-			if( phase != -1 ){
-				let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
-				let moonR = innerR + (outerR-innerR)*lonSh(moonLongitude[i])/(2*Math.PI);
 
-				let x = Math.cos(calendarA)*moonR;
-				let y = Math.sin(calendarA)*moonR;
-				let moonBack = SVG.circle(x, y, 5)
-				SVG.setAttribute(moonBack, "fill", "#222");
-				SVG.setAttribute(moonBack, "stroke", "rgb(200, 198, 199)");
-				SVG.setAttribute(moonBack, "stroke-width", 0.5);
-				dataLayer.appendChild(moonBack);
-				let moonShape = drawMoon(x, y, 4, moonPhase[i]);
-				dataLayer.appendChild(moonShape);
-				//moonInverse(Math.cos(calendarA)*moonR, -Math.sin(calendarA)*moonR, 4, moonPhase[i]);
-				//stroke( (Math.cos(moonPhase[i])*0.5+0.5)*192 + 64 );
-				//line(Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR, 0, 0);
+	// moon lines
+	for(let i = 1; i < moonLongitude.length; i++) {
+		//strokeWeight( (1.0 - Math.cos(moonPhase[i])*0.5+0.5)*10 );
+		let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
+		let lastCalendarA = pipad((i-1)/moonLongitude.length*2*Math.PI);
+		let lon = lonSh(moonLongitude[i]);
+		let lon_1 = lonSh(moonLongitude[i-1]);
+		let lon_2 = lonSh(moonLongitude[i-2]);
+		let moonR = innerR + (outerR-innerR) * lon/(2*Math.PI);
+		let lastMoonR = innerR + (outerR-innerR) * lon_1/(2*Math.PI);
+		let phase = 1 - (Math.sin(lonSh(moonPhase[i]))*0.5+0.5);
+		let gray = 30 + phase * 90;
+		if(i > 1){
+			let dR = moonR - lastMoonR;
+			let dLastR = lastMoonR - (innerR + (outerR-innerR)*lon_2/(2*Math.PI));
+			if(dR > 0 && dLastR <= 0){
+				// let moonLine = SVG.line(0, 0, Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR);
+				// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+				// moonLayer.appendChild(moonLine);
 			}
 		}
+		if( (lon > 5.7 && lon_1 < .5) || (lon_1 > 5.7 && lon < .5) ){
+		} else{
+			let moonLine = SVG.line(
+				Math.cos(lastCalendarA)*lastMoonR,
+				Math.sin(lastCalendarA)*lastMoonR,
+				Math.cos(calendarA)*moonR,
+				Math.sin(calendarA)*moonR);
+			SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+			SVG.setAttribute(moonLine, "stroke-width", phase*100);
+			SVG.setAttribute(moonLine, "stroke-linecap", "round");
+			moonLayer.appendChild(moonLine);
+		}
 	}
+
+	// moon phases
+	// for(let i = 1; i < moonLongitude.length; i++) {
+	// 	for(let m = 0; m < 8; m++){
+	// 		let phase = -1;
+	// 		if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
+	// 		if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
+	// 		if( phase != -1 ){
+	// 			let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
+	// 			let moonR = innerR + (outerR-innerR)*lonSh(moonLongitude[i])/(2*Math.PI);
+
+	// 			let x = Math.cos(calendarA)*moonR;
+	// 			let y = Math.sin(calendarA)*moonR;
+	// 			let moonBack = SVG.circle(x, y, 5)
+	// 			SVG.setAttribute(moonBack, "fill", "#222");
+	// 			SVG.setAttribute(moonBack, "stroke", "rgb(200, 198, 199)");
+	// 			SVG.setAttribute(moonBack, "stroke-width", 0.5);
+	// 			dataLayer.appendChild(moonBack);
+	// 			let moonShape = drawMoon(x, y, 4, moonPhase[i]);
+	// 			dataLayer.appendChild(moonShape);
+	// 			//moonInverse(Math.cos(calendarA)*moonR, -Math.sin(calendarA)*moonR, 4, moonPhase[i]);
+	// 			//stroke( (Math.cos(moonPhase[i])*0.5+0.5)*192 + 64 );
+	// 			//line(Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR, 0, 0);
+	// 		}
+	// 	}
+	// }
 
 	// let sortedLight = daylight
 	// 	.map((a,i)=>({a:a,i:i}))
@@ -350,12 +353,20 @@ loadCSV("2019.csv", function(data){
 				planetLine.setAttribute("stroke-width", 2);
 				planetLine.setAttribute("stroke-width", 0.25 + 3*distance);
 				planetLine.setAttribute("stroke-linecap", "round");
-				planetLine.setAttribute("stroke", "white");
+				planetLine.setAttribute("stroke", "#444");
 				// planetLine.setAttribute("stroke", planet.color);
-				planetsLayer.appendChild(planetLine);
+				// planetsLayer.appendChild(planetLine);
 			}
 		}
 	});
+
+
+
+
+
+
+
+
 
 	let tMonthStyle = "fill:rgb(222,210,33); font-family:Avenir Next; font-size:12px; text-anchor: middle;";
 	monthNames.forEach((month,i) => {
@@ -364,7 +375,7 @@ loadCSV("2019.csv", function(data){
 		let transform = "rotate("+angle+") translate(0 "+(-outerR - 12)+")"
 		SVG.setAttribute(text, "style", tMonthStyle);
 		SVG.setAttribute(text, "transform", transform);
-		dataLayer.appendChild(text);
+		// dataLayer.appendChild(text);
 	})
 
 	let zodiacStyle = "fill:rgb(222,210,33); font-family:Arial Unicode MS; font-size:12px; text-anchor: middle;";
@@ -376,7 +387,7 @@ loadCSV("2019.csv", function(data){
 		let transform = "rotate(90) translate(0 "+radius+")"
 		SVG.setAttribute(text, "style", zodiacStyle);
 		SVG.setAttribute(text, "transform", transform);
-		dataLayer.appendChild(text);
+		// dataLayer.appendChild(text);
 	});
 
 });
@@ -408,6 +419,7 @@ function drawMoon(x, y, r, phase){
 let pimargin = 0.075;
 
 function pipad(radians){
+	return radians;
 	while(radians < 0){ radians += Math.PI*2; }
 	while(radians > 2*Math.PI){ radians -= Math.PI*2; }
 	let zto1 = radians / (2*Math.PI);
