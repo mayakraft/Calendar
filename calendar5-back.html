@@ -25,13 +25,17 @@ sketch.onMouseDown = function(){ sketch.download(); }
 loadCSV("2019.csv", function(data){
 
 	let planetNames = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
-	let moonEventAngles = [0.0, Math.PI*0.25, Math.PI*0.5, Math.PI*0.75, Math.PI, Math.PI*1.25, Math.PI*1.5, Math.PI*1.75];
+	let moonEventAngles = Array.from(Array(16)).map((_,i) => i/16*(Math.PI*2))
+	// let moonEventAngles = [0.0, Math.PI*0.25, Math.PI*0.5, Math.PI*0.75, Math.PI, Math.PI*1.25, Math.PI*1.5, Math.PI*1.75];
 	let moonEventDescriptions = ["New", "First Quarter", "Full", "Third Quarter"];
 	let monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 	let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	let zodiacNames = ["Capricorn", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius"];
 	let zodiacSymbols = ["♑︎", "♒︎", "♓︎", "♈︎", "♉︎", "♊︎", "♋︎", "♌︎", "♍︎", "♎︎", "♏︎", "♐︎"]; // starting with Capricorn
 	// let zodiacSymbols = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"]; 
+
+	// leap year gets 366
+	let numDays = 365;
 
 
 	let year = data.map(d => d["year"]);
@@ -102,18 +106,19 @@ loadCSV("2019.csv", function(data){
 	SVG.setAttribute(backRect, "fill", "#fff");
 	sketch.appendChild(backRect);
 
-	let flipLayer = SVG.group();
-	SVG.setAttribute(flipLayer, "id", "transform-layer");
+	let flipLayer1 = SVG.group();
+	let flipLayer2 = SVG.group();
+	SVG.setAttribute(flipLayer1, "id", "transform-layer-1");
+	SVG.setAttribute(flipLayer2, "id", "transform-layer-2");
 	let translateString = "translate(" + (w*0.5) + " " + (h*0.5) + ")";
 	let rotateString = 	"rotate(-90)";
 	let reflectString = "scale(-1 1)";
 	let transform = [translateString, reflectString, rotateString].join(" ");
-	SVG.setAttribute(flipLayer, "transform", transform);
-	sketch.appendChild(flipLayer);
+	SVG.setAttribute(flipLayer1, "transform", transform);
+	SVG.setAttribute(flipLayer2, "transform", transform);
 
 	let textLayer = SVG.group();
 	SVG.setAttribute(textLayer, "transform", [translateString, rotateString].join(" "));
-	sketch.appendChild(textLayer);
 
 	let gridLayer = SVG.group();
 	let moonLayer = SVG.group();
@@ -125,11 +130,16 @@ loadCSV("2019.csv", function(data){
 	SVG.setAttribute(sunLayer, "id", "sun");
 	SVG.setAttribute(planetsLayer, "id", "planets");
 	SVG.setAttribute(dataLayer, "id", "data");
-	flipLayer.appendChild(gridLayer);
-	flipLayer.appendChild(moonLayer);
-	flipLayer.appendChild(sunLayer);
-	flipLayer.appendChild(planetsLayer);
-	flipLayer.appendChild(dataLayer);
+
+	sketch.appendChild(flipLayer1);
+	sketch.appendChild(textLayer);
+	sketch.appendChild(flipLayer2);
+
+	flipLayer1.appendChild(gridLayer);
+	flipLayer2.appendChild(moonLayer);
+	flipLayer2.appendChild(sunLayer);
+	flipLayer2.appendChild(planetsLayer);
+	flipLayer2.appendChild(dataLayer);
 
 	// outer measurement lines
 	// let arc0 = SVG.arcLine(0, 0, innerR, pipad(0), pipad(2*Math.PI));
@@ -140,18 +150,40 @@ loadCSV("2019.csv", function(data){
 	// SVG.setAttribute(arc1, "stroke", "black");
 	// gridLayer.appendChild(arc0);
 	// gridLayer.appendChild(arc1);
-	for(let i = 0; i <= 12; i++){
+
+
+	for(let i = 12; i >= 0; i--){
+		let r = innerR + (outerR-innerR)*i/12.0;
+		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
+		let f = (1-i%2)*10+245;
+		SVG.setAttribute(arc, "fill", "rgb("+f+","+f+","+f+")");
+		// SVG.setAttribute(arc, "stroke", "black");
+		// SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
+		// SVG.setAttribute(arc, "stroke-linecap", "round");
+		gridLayer.appendChild(arc);
+	}
+
+
+	// Array.from(Array(13)).forEach((_,i) => {
+	[0,12].forEach(i => {
 		let r = innerR + (outerR-innerR)*i/12.0;
 		let arc = SVG.arcLine(0,0, r, pipad(0), pipad(2*Math.PI));
 		SVG.setAttribute(arc, "fill", "none");
-		SVG.setAttribute(arc, "stroke", "black");
-		SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
-		SVG.setAttribute(arc, "stroke-linecap", "round");
+		// SVG.setAttribute(arc, "stroke", "black");
+		// SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
+		// SVG.setAttribute(arc, "stroke-linecap", "round");
+		SVG.setAttribute(arc, "stroke", "#555");
+		SVG.setAttribute(arc, "stroke-width", 0.5);
 		gridLayer.appendChild(arc);
-	}
-	// let monthPct = 0;
+	});
+
+	let monthPct = 0;
+	let monthStartDays = monthDays.map((d,i) => 
+		monthDays.slice(0,i).reduce((prev,curr) => prev + curr, 0)
+	);
+	monthStartDays.push(numDays);
 	// for(let i = 0; i <= 12; i+=1){
-	// 	if(i != 0){ monthPct += monthDays[i-1] / 365.0; }
+	// 	if(i != 0){ monthPct += monthDays[i-1] / numDays.0; }
 	// 	let a = pipad(monthPct*Math.PI*2);
 	// 	let gridLine = SVG.line(
 	// 		Math.cos(a)*innerR,
@@ -164,51 +196,45 @@ loadCSV("2019.csv", function(data){
 	// 	gridLayer.appendChild(gridLine);
 	// }
 
-	[0, Math.PI*2].forEach(a => {
-		a = pipad(a);
-		let gridLine = SVG.line(
-			Math.cos(a)*innerR,
-			Math.sin(a)*innerR,
-			Math.cos(a)*outerR,
-			Math.sin(a)*outerR
-		);
-		SVG.setAttribute(gridLine, "stroke", "#555");
-		SVG.setAttribute(gridLine, "stroke-width", 0.5);
-		gridLayer.appendChild(gridLine);
+	// outer day lines
+	Array.from(Array(numDays + 1)).forEach((_,i) =>{
+		let a = pipad(i/numDays*Math.PI*2);
+		let rSmall = outerR;
+		let rLarge = outerR + 2;
+		let month = 0;
+		while(i >= monthStartDays[month] && month < monthStartDays.length){
+			month += 1;
+		}
+		month -= 1;
+		if(monthStartDays.includes(i)) { rSmall = innerR; rLarge = outerR + 6; }
+		else if ((i+1 - monthStartDays[month]) % 10 == 0){ rLarge = outerR + 6; }
+		else if ((i+1 - monthStartDays[month]) % 5 == 0){ rLarge = outerR + 4;  }
+		let l = SVG.line(
+			Math.cos(a)*rSmall,
+			Math.sin(a)*rSmall,
+			Math.cos(a)*rLarge,
+			Math.sin(a)*rLarge);
+		SVG.setAttribute(l, "stroke", "#777");
+		SVG.setAttribute(l, "stroke-width", 0.666);
+		gridLayer.appendChild(l);
 	});
 
 
-	// moon
-	for(let i = 1; i < moonLongitude.length; i++) {
-		//strokeWeight( (1.0 - Math.cos(moonPhase[i])*0.5+0.5)*10 );
-		let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
-		let lastCalendarA = pipad((i-1)/moonLongitude.length*2*Math.PI);
-		let lon = lonSh(moonLongitude[i]);
-		let lon_1 = lonSh(moonLongitude[i-1]);
-		let lon_2 = lonSh(moonLongitude[i-2]);
-		let moonR = innerR + (outerR-innerR) * lon/(2*Math.PI);
-		let lastMoonR = innerR + (outerR-innerR) * lon_1/(2*Math.PI);
-		let gray = 30 + 192 - (Math.sin(lonSh(moonPhase[i]))*0.5+0.5)*192;
-		if(i > 1){
-			let dR = moonR - lastMoonR;
-			let dLastR = lastMoonR - (innerR + (outerR-innerR)*lon_2/(2*Math.PI));
-			if(dR > 0 && dLastR <= 0){
-				// let moonLine = SVG.line(0, 0, Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR);
-				// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-				// moonLayer.appendChild(moonLine);
-			}
-		}
-		if( (lon > 5.7 && lon_1 < .5) || (lon_1 > 5.7 && lon < .5) ){
-		} else{
-			let moonLine = SVG.line(
-				Math.cos(lastCalendarA)*lastMoonR,
-				Math.sin(lastCalendarA)*lastMoonR,
-				Math.cos(calendarA)*moonR,
-				Math.sin(calendarA)*moonR);
-			SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-			moonLayer.appendChild(moonLine);
-		}
-	}
+
+
+	// [0, Math.PI*2].forEach(a => {
+	// 	a = pipad(a);
+	// 	let gridLine = SVG.line(
+	// 		Math.cos(a)*innerR,
+	// 		Math.sin(a)*innerR,
+	// 		Math.cos(a)*outerR,
+	// 		Math.sin(a)*outerR
+	// 	);
+	// 	SVG.setAttribute(gridLine, "stroke", "#555");
+	// 	SVG.setAttribute(gridLine, "stroke-width", 0.5);
+	// 	gridLayer.appendChild(gridLine);
+	// });
+
 
 	// sun
 	for(let i = 1; i < daylight.length; i++) {
@@ -225,17 +251,74 @@ loadCSV("2019.csv", function(data){
 				Math.sin(lastCalendarA)*lastSunR,
 				Math.cos(calendarA)*sunR,
 				Math.sin(calendarA)*sunR);
-			SVG.setAttribute(sunLine, "stroke", "#ccc");
+			SVG.setAttribute(sunLine, "stroke", "black");
 			SVG.setAttribute(sunLine, "stroke-linecap", "round");
-			// SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9)*7+.2);
-			SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9)*2);
+			SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9.1)*3+2.0);
+			// SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9.1)*5);
+			sunLayer.appendChild(sunLine);
+		}
+	}
+	for(let i = 1; i < daylight.length; i++) {
+		let calendarA = pipad(i/daylight.length*2*Math.PI);
+		let lastCalendarA = pipad((i-1)/daylight.length*2*Math.PI);
+		let sunLon = lonSh(sunLongitude[i]);
+		let sunLon_1 = lonSh(sunLongitude[i-1]);
+		let sunR = innerR + (outerR-innerR)*sunLon/(2*Math.PI);
+		let lastSunR = innerR + (outerR-innerR)*sunLon_1/(2*Math.PI);
+		if( (sunLon > 5.7 && sunLon_1 < .5) || (sunLon_1 > 5.7 && sunLon < .5) ){
+		} else{
+			let sunLine = SVG.line(
+				Math.cos(lastCalendarA)*lastSunR,
+				Math.sin(lastCalendarA)*lastSunR,
+				Math.cos(calendarA)*sunR,
+				Math.sin(calendarA)*sunR);
+			SVG.setAttribute(sunLine, "stroke", "white");
+			SVG.setAttribute(sunLine, "stroke-linecap", "round");
+			SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9.1)*3);
+			// SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9.1)*5);
 			sunLayer.appendChild(sunLine);
 		}
 	}
 
-	// moon
+	// moon lines
 	for(let i = 1; i < moonLongitude.length; i++) {
-		for(let m = 0; m < 8; m++){
+		//strokeWeight( (1.0 - Math.cos(moonPhase[i])*0.5+0.5)*10 );
+		let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
+		let lastCalendarA = pipad((i-1)/moonLongitude.length*2*Math.PI);
+		let lon = lonSh(moonLongitude[i]);
+		let lon_1 = lonSh(moonLongitude[i-1]);
+		let lon_2 = lonSh(moonLongitude[i-2]);
+		let moonR = innerR + (outerR-innerR) * lon/(2*Math.PI);
+		let lastMoonR = innerR + (outerR-innerR) * lon_1/(2*Math.PI);
+		let phase = 1 - (Math.sin(lonSh(moonPhase[i]))*0.5+0.5);
+		let gray = phase * 150;
+		if(i > 1){
+			let dR = moonR - lastMoonR;
+			let dLastR = lastMoonR - (innerR + (outerR-innerR)*lon_2/(2*Math.PI));
+			if(dR > 0 && dLastR <= 0){
+				// let moonLine = SVG.line(0, 0, Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR);
+				// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+				// moonLayer.appendChild(moonLine);
+			}
+		}
+		if( (lon > 5.7 && lon_1 < .5) || (lon_1 > 5.7 && lon < .5) ){
+		} else{
+			let moonLine = SVG.line(
+				Math.cos(lastCalendarA)*lastMoonR,
+				Math.sin(lastCalendarA)*lastMoonR,
+				Math.cos(calendarA)*moonR,
+				Math.sin(calendarA)*moonR);
+			// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+			SVG.setAttribute(moonLine, "stroke", "black");
+			SVG.setAttribute(moonLine, "stroke-width", 1);//phase*4);
+			SVG.setAttribute(moonLine, "stroke-linecap", "round");
+			// moonLayer.appendChild(moonLine);
+		}
+	}
+
+	// moon phases
+	for(let i = 1; i < moonLongitude.length; i++) {
+		for(let m = 0; m < moonEventAngles.length; m++){
 			let phase = -1;
 			if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
 			if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
@@ -245,12 +328,12 @@ loadCSV("2019.csv", function(data){
 
 				let x = Math.cos(calendarA)*moonR;
 				let y = Math.sin(calendarA)*moonR;
-				let moonBack = SVG.circle(x, y, 5)
-				SVG.setAttribute(moonBack, "fill", "#222");
-				SVG.setAttribute(moonBack, "stroke", "rgb(200, 198, 199)");
-				SVG.setAttribute(moonBack, "stroke-width", 0.5);
+				let moonBack = SVG.circle(x, y, 3.5)
+				SVG.setAttribute(moonBack, "fill", "black");
+				SVG.setAttribute(moonBack, "stroke", "none");
 				dataLayer.appendChild(moonBack);
-				let moonShape = drawMoon(x, y, 4, moonPhase[i]);
+
+				let moonShape = drawMoon(x, y, 3, moonPhase[i]);
 				dataLayer.appendChild(moonShape);
 				//moonInverse(Math.cos(calendarA)*moonR, -Math.sin(calendarA)*moonR, 4, moonPhase[i]);
 				//stroke( (Math.cos(moonPhase[i])*0.5+0.5)*192 + 64 );
@@ -259,26 +342,27 @@ loadCSV("2019.csv", function(data){
 		}
 	}
 
-	// let sortedLight = daylight
-	// 	.map((a,i)=>({a:a,i:i}))
-	// 	.sort((a,b)=>a.a-b.a)
-	// 	.map(el => el.i);
-	// let solstice = [sortedLight[0], sortedLight[ sortedLight.length-1 ]];
-	// // add equinoxes
-	// solstice.push( 7 + parseInt((solstice[1] - solstice[0]) / 2) + solstice[0]);
-	// solstice.push( -14+ parseInt(solstice[2] - daylight.length*0.5) );
-	// // those needed +/- 6 adjustment idk why
-	// solstice.forEach(i => {
-	// 	let sunR = innerR + (outerR-innerR) * i/daylight.length;
-	// 	let sunA = pipad(sunLongitude[i]);
-	// 	let x = Math.cos(sunA)*sunR;
-	// 	let y = Math.sin(sunA)*sunR;
-	// 	let circle = SVG.circle(x, y, 10);
-	// 	SVG.setAttribute(circle, "stroke", "black");
-	// 	SVG.setAttribute(circle, "fill", "white");
-	// 	SVG.setAttribute(circle, "stroke-width", "2.5");
-	// 	dataLayer.appendChild(circle);
-	// })
+	let sortedLight = daylight
+		.map((a,i)=>({a:a,i:i}))
+		.sort((a,b)=>a.a-b.a)
+		.map(el => el.i);
+	let solstice = [sortedLight[0], sortedLight[ sortedLight.length-1 ]];
+	// add equinoxes
+	solstice.push( 7 + parseInt((solstice[1] - solstice[0]) / 2) + solstice[0]);
+	solstice.push( -14+ parseInt(solstice[2] - daylight.length*0.5) );
+	// those needed +/- 7 adjustment b/c ellipses i guess
+	solstice.forEach(i => {
+		// let calendarR = innerR + (outerR-innerR) * i / sunLongitude.length;
+		let calendarA = pipad(i/sunLongitude.length*2*Math.PI);
+		let sunR = innerR + (outerR-innerR)*lonSh(sunLongitude[i])/(2*Math.PI);
+		let x = Math.cos(calendarA)*sunR;
+		let y = Math.sin(calendarA)*sunR;
+		let circle = SVG.circle(x, y, 10);
+		SVG.setAttribute(circle, "stroke", "black");
+		SVG.setAttribute(circle, "fill", "white");
+		SVG.setAttribute(circle, "stroke-width", "1.5");
+		dataLayer.appendChild(circle);
+	});
 
 	// draw planets
 	// let polylinePoints = planets.map((p, pi) => 
@@ -325,7 +409,7 @@ loadCSV("2019.csv", function(data){
 					Math.cos(calendarA)*planetR,
 					Math.sin(calendarA)*planetR );
 				planetLine.setAttribute("stroke-width", 2);
-				planetLine.setAttribute("stroke-width", 0.25 + 4*distance + 2);
+				planetLine.setAttribute("stroke-width", distance + 2);
 				planetLine.setAttribute("stroke-linecap", "round");
 				planetLine.setAttribute("stroke", "white");
 				planetsLayer.appendChild(planetLine);
@@ -348,7 +432,7 @@ loadCSV("2019.csv", function(data){
 					Math.cos(calendarA)*planetR,
 					Math.sin(calendarA)*planetR );
 				planetLine.setAttribute("stroke-width", 2);
-				planetLine.setAttribute("stroke-width", 0.25 + 4*distance);
+				planetLine.setAttribute("stroke-width", distance + 1);
 				planetLine.setAttribute("stroke-linecap", "round");
 				planetLine.setAttribute("stroke", "black");
 				// planetLine.setAttribute("stroke", planet.color);
@@ -357,11 +441,11 @@ loadCSV("2019.csv", function(data){
 		}
 	});
 
-	let tMonthStyle = "fill:black; font-family:Avenir Next; font-size:12px; text-anchor: middle;";
+	let tMonthStyle = "fill:#ccc; font-family:Avenir Next; font-size:10px; text-anchor: middle;";
 	monthNames.reverse().forEach((month,i) => {
 		let text = SVG.text(month.toUpperCase(), 0, 0);
 		let angle = pipad(i / 12 * 2*Math.PI) / Math.PI * 180 + 90 + 15;
-		let transform = "rotate("+angle+") translate(0 "+(-outerR - 12)+")"
+		let transform = "rotate("+angle+") translate(0 "+(-outerR - 9)+")"
 		SVG.setAttribute(text, "style", tMonthStyle);
 		SVG.setAttribute(text, "transform", transform);
 		textLayer.appendChild(text);
@@ -379,6 +463,76 @@ loadCSV("2019.csv", function(data){
 		textLayer.appendChild(text);
 	});
 
+
+	let textStyleL = "fill: black; font-family: Avenir Next; font-size: 7px; text-anchor: start;";
+	let textStyleR = "fill: black; font-family: Avenir Next; font-size: 7px; text-anchor: end;";
+	[
+		{s:false, r:-15, text:"Solstice", i:solstice[1], angle: sunLongitude[solstice[1]]},
+		{s:false, r:-15, text:"Solstice", i:solstice[0], angle: sunLongitude[solstice[0]]},
+		{s:true, r:-3, text:"Equinox", i:solstice[3], angle: sunLongitude[solstice[3]-1]},
+		{s:false, r:-15, text:"Equinox", i:solstice[2], angle: sunLongitude[solstice[2]]},
+		{s:true, r:0, text:"Mercury retrograde", i:257, angle: mercuryLongitude[257]},
+		{s:true, r:7, text:"Mercury direct", i:348, angle: mercuryLongitude[348]},
+		{s:true, r:-5, text:"Mercury retrograde", i:753, angle: mercuryLongitude[753]},
+		{s:true, r:-15, text:"Mercury direct", i:850, angle: mercuryLongitude[850]},
+		{s:true, r:-10, text:"Mercury retrograde", i:1216, angle: mercuryLongitude[1216]},
+		{s:true, r:0, text:"Mercury direct", i:1297, angle: mercuryLongitude[1297]},
+		{s:true, r:0, text:"Mercury transit", i:1258, angle: mercuryLongitude[1258]},
+		{s:true, r:-10, text:"Jupiter retrograde", i:401, angle: jupiterLongitude[401]},
+		{s:true, r:10, text:"Jupiter direct", i:892, angle: jupiterLongitude[892]},
+		{s:true, r:-10, text:"Saturn retrograde", i:474, angle: saturnLongitude[474]},
+		{s:true, r:0, text:"Saturn direct", i:1040, angle: saturnLongitude[1040]},
+		{s:false, r:-10, text:"Uranus direct", i:25, angle: uranusLongitude[25]},
+		{s:true, r:-10, text:"Uranus retrograde", i:890, angle: uranusLongitude[890]},
+		{s:true, r:0, text:"Neptune retrograde", i:684, angle: neptuneLongitude[684]},
+		{s:false, r:-15, text:"Neptune direct", i:1320, angle: neptuneLongitude[1320]},
+		{s:false, r:-15, text:"Venus-Jupiter conjugation", i:86, angle: jupiterLongitude[86]},
+		{s:false, r:5, text:"Venus-Jupiter conjugation", i:1301, angle: jupiterLongitude[1301]},
+		{s:true, r:7, text:"Venus-Saturn conjugation", i:194, angle: saturnLongitude[194]},
+		{s:false, r:0, text:"Venus-Saturn conjugation", i:1378, angle: saturnLongitude[1378]},
+		{s:true, r:15, text:"Venus-Mars conjugation", i:942, angle: marsLongitude[942]},
+		{s:true, r:25, text:"Mars-Earth maximum separation", i:978, angle: marsLongitude[978]},
+
+	].forEach(el => {
+		let str = el.text;//.toUpperCase();
+		let tX = el.s ? 2 : -2;
+		let s = "<tspan x='"+tX+"px' dy='1.1em'>"+str+"</tspan><tspan x='"+tX+"px' dy='1.1em'>"+indexToDate(el.i)+"</tspan>";
+		let text = SVG.text(s, 0, 0);
+		let r = outerR + 40 + el.r;
+		let roundedAngle = Math.round((el.angle/Math.PI*180)/360*720)/720*360 *Math.PI/180;
+		// let a = -roundedAngle/Math.PI*180+30;
+
+		let a = pipad(el.i/sunLongitude.length*2*Math.PI) * 180/Math.PI;
+		// let r = innerR + (outerR-innerR)*lonSh(el.angle)/(2*Math.PI);
+		// let x = Math.cos(calendarA)*sunR;
+		// let y = Math.sin(calendarA)*sunR;
+
+		let transform = "rotate("+(-a+90)+") translate(0 "+(-r)+")"
+		if(el.s == false){ SVG.setAttribute(text, "style", textStyleR); }
+		else             { SVG.setAttribute(text, "style", textStyleL); }
+		SVG.setAttribute(text, "transform", transform);
+		textLayer.appendChild(text);
+		
+		// let eventR = innerR + (outerR-innerR) * el.i / sunLongitude.length; // stand in for all arrays
+		let eventR = innerR + (outerR-innerR)*lonSh(el.angle)/(2*Math.PI);
+		let l = SVG.line(
+			Math.cos((-a)/180*Math.PI)*(eventR),
+			Math.sin((-a)/180*Math.PI)*(eventR),
+			Math.cos((-a)/180*Math.PI)*(r-3),
+			Math.sin((-a)/180*Math.PI)*(r-3));
+		SVG.setAttribute(l, "stroke", "black");
+		l.setAttribute("stroke-linecap", "round");
+		l.setAttribute("stroke-dasharray", "0.01 3");
+		SVG.setAttribute(l, "stroke-width", 0.666);
+		textLayer.appendChild(l);
+
+	});
+
+
+	function indexToDate(index){
+		return month[index] + "." + day[index];
+	}
+
 });
 
 
@@ -392,10 +546,11 @@ function drawMoon(x, y, r, phase){
 	points = points.concat( arr.map(a => ([r*Math.sin(a)*ph1, r*Math.cos(a)])) );
 	points = points.concat( arr.reverse().map(a => ([r*Math.sin(a)*ph2, r*Math.cos(a)])) );
 	let poly = SVG.polygon(points);
-	SVG.setAttribute(poly, "fill", "rgb(200, 198, 199)");
+	SVG.setAttribute(poly, "fill", "white");
 	SVG.setAttribute(poly, "stroke", "none");
 	let translateString = "translate(" + x.toFixed(4) + " " + y.toFixed(4) + ")";
-	let rotateString = 	"rotate(" + (Math.PI*0.2 - Math.PI/2)/Math.PI*180 + ")";
+	let rotateString = "rotate(" + (Math.PI*0.2 - Math.PI/2)/Math.PI*180 + ")";
+	// let rotateString = "rotate(" + (-Math.PI*0.2 + Math.PI/2)/Math.PI*180 + ")";
 	let transform = [translateString, rotateString].join(" ");
 	SVG.setAttribute(poly, "transform", transform);
 	return poly;
@@ -405,7 +560,7 @@ function drawMoon(x, y, r, phase){
 
 
 
-let pimargin = 0.075;
+let pimargin = 0.12;
 
 function pipad(radians){
 	while(radians < 0){ radians += Math.PI*2; }

@@ -131,24 +131,46 @@ loadCSV("2019.csv", function(data){
 	layer.appendChild(sunLayer);
 	layer.appendChild(dataLayer);
 
-	// outer measurement lines
-	// let arc0 = SVG.arcLine(0, 0, innerR, pipad(0), pipad(2*Math.PI));
-	// let arc1 = SVG.arcLine(0, 0, outerR, pipad(0), pipad(2*Math.PI));
-	// SVG.setAttribute(arc0, "fill", "none");
-	// SVG.setAttribute(arc0, "stroke", "white");
-	// SVG.setAttribute(arc1, "fill", "none");
-	// SVG.setAttribute(arc1, "stroke", "white");
-	// gridLayer.appendChild(arc0);
-	// gridLayer.appendChild(arc1);
-	for(let i = 0; i <= 12; i++){
+
+	let gridColor = "#888";
+	[0, Math.PI*2].forEach(a => {
+		a = pipad(a);
+		let gridLine = SVG.line(
+			Math.cos(a)*innerR,
+			Math.sin(a)*innerR,
+			Math.cos(a)*outerR,
+			Math.sin(a)*outerR
+		);
+		SVG.setAttribute(gridLine, "stroke", gridColor);
+		SVG.setAttribute(gridLine, "stroke-linecap", "round");
+		SVG.setAttribute(gridLine, "stroke-width", 0.5);
+		gridLayer.appendChild(gridLine);
+	});
+
+	// outer month lines
+	Array.from(Array(12)).forEach(i =>{
 		let r = innerR + (outerR-innerR)*i/12.0;
 		let arc = SVG.arcLine(0,0, r, pipad(0), pipad(2*Math.PI));
 		SVG.setAttribute(arc, "fill", "none");
 		SVG.setAttribute(arc, "stroke", "white");
-		SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
 		SVG.setAttribute(arc, "stroke-linecap", "round");
+		SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
 		// gridLayer.appendChild(arc);
-	}
+	});
+	// outlines
+	[0, 12].forEach(i =>{
+		let r = innerR + (outerR-innerR)*i/12.0;
+		let arc = SVG.arcLine(0,0, r, pipad(0), pipad(2*Math.PI));
+		SVG.setAttribute(arc, "fill", "none");
+		SVG.setAttribute(arc, "stroke", gridColor);
+		SVG.setAttribute(arc, "stroke-linecap", "round");
+		SVG.setAttribute(arc, "stroke-width", 0.5);
+		// SVG.setAttribute(arc, "stroke", "white");
+		// SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
+		gridLayer.appendChild(arc);
+	});
+
+
 	// let monthPct = 0;
 	// for(let i = 0; i <= 12; i+=1){
 	// 	if(i != 0){ monthPct += monthDays[i-1] / 365.0; }
@@ -163,20 +185,6 @@ loadCSV("2019.csv", function(data){
 	// 	SVG.setAttribute(gridLine, "stroke-width", 0.5);
 	// 	gridLayer.appendChild(gridLine);
 	// }
-
-	[0, Math.PI*2].forEach(a => {
-		a = pipad(a);
-		let gridLine = SVG.line(
-			Math.cos(a)*innerR,
-			Math.sin(a)*innerR,
-			Math.cos(a)*outerR,
-			Math.sin(a)*outerR
-		);
-		SVG.setAttribute(gridLine, "stroke", "#555");
-		SVG.setAttribute(gridLine, "stroke-width", 0.5);
-		// gridLayer.appendChild(gridLine);
-	});
-
 	// sun
 	for(let i = 1; i < daylight.length; i++) {
 		let calendarA = pipad(i/daylight.length*2*Math.PI);
@@ -229,38 +237,39 @@ loadCSV("2019.csv", function(data){
 				Math.sin(lastCalendarA)*lastMoonR,
 				Math.cos(calendarA)*moonR,
 				Math.sin(calendarA)*moonR);
-			SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-			SVG.setAttribute(moonLine, "stroke-width", phase*100);
+			// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+			SVG.setAttribute(moonLine, "stroke", "rgb(200, 198, 199)");
+			SVG.setAttribute(moonLine, "stroke-width", phase*2);
 			SVG.setAttribute(moonLine, "stroke-linecap", "round");
 			moonLayer.appendChild(moonLine);
 		}
 	}
 
 	// moon phases
-	// for(let i = 1; i < moonLongitude.length; i++) {
-	// 	for(let m = 0; m < 8; m++){
-	// 		let phase = -1;
-	// 		if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
-	// 		if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
-	// 		if( phase != -1 ){
-	// 			let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
-	// 			let moonR = innerR + (outerR-innerR)*lonSh(moonLongitude[i])/(2*Math.PI);
+	for(let i = 1; i < moonLongitude.length; i++) {
+		for(let m = 0; m < 8; m++){
+			let phase = -1;
+			if(moonPhase[i-1] < moonEventAngles[m] && moonEventAngles[m] < moonPhase[i]){ phase = m; }
+			if(moonPhase[i-1] > 5.26 && moonPhase[i] < 1){ phase = 0; }
+			if( phase != -1 ){
+				let calendarA = pipad(i/moonLongitude.length*2*Math.PI);
+				let moonR = innerR + (outerR-innerR)*lonSh(moonLongitude[i])/(2*Math.PI);
 
-	// 			let x = Math.cos(calendarA)*moonR;
-	// 			let y = Math.sin(calendarA)*moonR;
-	// 			let moonBack = SVG.circle(x, y, 5)
-	// 			SVG.setAttribute(moonBack, "fill", "#222");
-	// 			SVG.setAttribute(moonBack, "stroke", "rgb(200, 198, 199)");
-	// 			SVG.setAttribute(moonBack, "stroke-width", 0.5);
-	// 			dataLayer.appendChild(moonBack);
-	// 			let moonShape = drawMoon(x, y, 4, moonPhase[i]);
-	// 			dataLayer.appendChild(moonShape);
-	// 			//moonInverse(Math.cos(calendarA)*moonR, -Math.sin(calendarA)*moonR, 4, moonPhase[i]);
-	// 			//stroke( (Math.cos(moonPhase[i])*0.5+0.5)*192 + 64 );
-	// 			//line(Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR, 0, 0);
-	// 		}
-	// 	}
-	// }
+				let x = Math.cos(calendarA)*moonR;
+				let y = Math.sin(calendarA)*moonR;
+				let moonBack = SVG.circle(x, y, 10)
+				SVG.setAttribute(moonBack, "fill", "#222");
+				SVG.setAttribute(moonBack, "stroke", "rgb(200, 198, 199)");
+				SVG.setAttribute(moonBack, "stroke-width", 0.5);
+				dataLayer.appendChild(moonBack);
+				let moonShape = drawMoon(x, y, 9, moonPhase[i]);
+				dataLayer.appendChild(moonShape);
+				//moonInverse(Math.cos(calendarA)*moonR, -Math.sin(calendarA)*moonR, 4, moonPhase[i]);
+				//stroke( (Math.cos(moonPhase[i])*0.5+0.5)*192 + 64 );
+				//line(Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR, 0, 0);
+			}
+		}
+	}
 
 	// let sortedLight = daylight
 	// 	.map((a,i)=>({a:a,i:i}))
@@ -284,21 +293,6 @@ loadCSV("2019.csv", function(data){
 	// })
 
 	// draw planets
-	// let polylinePoints = planets.map((p, pi) => 
-	// 	p.longitude.map((l,li,arr) => {
-	// 		let radius = innerR + (outerR-innerR) * li/arr.length;
-	// 		return [Math.cos(l)*radius, Math.sin(l)*radius];
-	// 	})
-	// );
-	// polylinePoints.forEach((p,i) =>{
-	// 	let planetLine = SVG.polyline(p);
-	// 	SVG.setAttribute(planetLine, "stroke", planets[i].color);
-	// 	SVG.setAttribute(planetLine, "fill", "none");
-	// 	SVG.setAttribute(planetLine, "stroke-width", 2);
-	// 	planetsLayer.appendChild(planetLine);
-
-	// });
-
 	let planetMinMax = planets.map((p, pi) => {
 		let sorted = p.distance.slice().sort((a,b)=>a-b);
 		return [sorted[0], sorted[sorted.length-1]];
@@ -375,7 +369,7 @@ loadCSV("2019.csv", function(data){
 		let transform = "rotate("+angle+") translate(0 "+(-outerR - 12)+")"
 		SVG.setAttribute(text, "style", tMonthStyle);
 		SVG.setAttribute(text, "transform", transform);
-		// dataLayer.appendChild(text);
+		dataLayer.appendChild(text);
 	})
 
 	let zodiacStyle = "fill:rgb(222,210,33); font-family:Arial Unicode MS; font-size:12px; text-anchor: middle;";
@@ -387,7 +381,7 @@ loadCSV("2019.csv", function(data){
 		let transform = "rotate(90) translate(0 "+radius+")"
 		SVG.setAttribute(text, "style", zodiacStyle);
 		SVG.setAttribute(text, "transform", transform);
-		// dataLayer.appendChild(text);
+		dataLayer.appendChild(text);
 	});
 
 });
@@ -406,7 +400,7 @@ function drawMoon(x, y, r, phase){
 	SVG.setAttribute(poly, "fill", "rgb(200, 198, 199)");
 	SVG.setAttribute(poly, "stroke", "none");
 	let translateString = "translate(" + x.toFixed(4) + " " + y.toFixed(4) + ")";
-	let rotateString = 	"rotate(" + (Math.PI*0.2 - Math.PI/2)/Math.PI*180 + ")";
+	let rotateString = 	"rotate(" + (-Math.PI*0.2 + Math.PI/2)/Math.PI*180 + ")";
 	let transform = [translateString, rotateString].join(" ");
 	SVG.setAttribute(poly, "transform", transform);
 	return poly;
@@ -416,10 +410,9 @@ function drawMoon(x, y, r, phase){
 
 
 
-let pimargin = 0.075;
+let pimargin = 0.12;
 
 function pipad(radians){
-	return radians;
 	while(radians < 0){ radians += Math.PI*2; }
 	while(radians > 2*Math.PI){ radians -= Math.PI*2; }
 	let zto1 = radians / (2*Math.PI);
