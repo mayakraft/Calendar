@@ -95,7 +95,7 @@ loadCSV("2019.csv", function(data){
 	let outerR = 280;
 
 	let backRect = SVG.rect(0, 0, w, h);
-	SVG.setAttribute(backRect, "fill", "#222");
+	SVG.setAttribute(backRect, "fill", "black");
 	sketch.appendChild(backRect);
 
 	let layer = SVG.group();
@@ -166,7 +166,7 @@ loadCSV("2019.csv", function(data){
 			Math.sin(moonLongitude[i])*calendarR
 		);
 		// let gray = 255 - phase0_1 * (255-33) + 33;
-		let gray = 200 - phase0_1 * (200-20) + 20;
+		let gray = 200 - phase0_1 * (200);
 		SVG.setAttribute(moonLine, "stroke-width", 6 - phase0_1*5);
 		SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
 		SVG.setAttribute(moonLine, "stroke-linecap", "round");

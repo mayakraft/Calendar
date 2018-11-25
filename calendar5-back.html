@@ -96,6 +96,21 @@ loadCSV("2019.csv", function(data){
 		// 	color: "rgb(169,149,146)"}
 	];
 
+	let fullMoons = [
+		{zodiac: "Leo", month:1, day:21, i: 82},
+		{zodiac: "Virgo", month:2, day:19, i: 199},
+		{zodiac: "Libra", month:3, day:21, i: 317},
+		{zodiac: "Libra", month:4, day:19, i: 434},
+		{zodiac: "Scorpio", month:5, day:18, i: 552},
+		{zodiac: "Sagittarius", month:6, day:17, i: 670},
+		{zodiac: "Capricorn", month:7, day:16, i: 788},
+		{zodiac: "Aquarius", month:8, day:15, i: 907},
+		{zodiac: "Pisces", month:9, day:14, i: 1026},
+		{zodiac: "Aries", month:10, day:13, i: 1144},
+		{zodiac: "Taurus", month:11, day:12, i: 1263},
+		{zodiac: "Gemini", month:12, day:12, i: 1382}
+	];
+
 	// translate(width*0.5, height*0.5);
 	// rotate(-1.0/24.0*Math.PI*2);
 
@@ -434,7 +449,7 @@ loadCSV("2019.csv", function(data){
 				planetLine.setAttribute("stroke-width", 2);
 				planetLine.setAttribute("stroke-width", distance + 1);
 				planetLine.setAttribute("stroke-linecap", "round");
-				planetLine.setAttribute("stroke", "black");
+				planetLine.setAttribute("stroke", "#999");
 				// planetLine.setAttribute("stroke", planet.color);
 				planetsLayer.appendChild(planetLine);
 			}
@@ -469,29 +484,29 @@ loadCSV("2019.csv", function(data){
 	[
 		{s:false, r:-15, text:"Solstice", i:solstice[1], angle: sunLongitude[solstice[1]]},
 		{s:false, r:-15, text:"Solstice", i:solstice[0], angle: sunLongitude[solstice[0]]},
-		{s:true, r:-3, text:"Equinox", i:solstice[3], angle: sunLongitude[solstice[3]-1]},
+		{s:true, r:-5, text:"Equinox", i:solstice[3], angle: sunLongitude[solstice[3]-1]},
 		{s:false, r:-15, text:"Equinox", i:solstice[2], angle: sunLongitude[solstice[2]]},
-		{s:true, r:0, text:"Mercury retrograde", i:257, angle: mercuryLongitude[257]},
-		{s:true, r:7, text:"Mercury direct", i:348, angle: mercuryLongitude[348]},
-		{s:true, r:-5, text:"Mercury retrograde", i:753, angle: mercuryLongitude[753]},
-		{s:true, r:-15, text:"Mercury direct", i:850, angle: mercuryLongitude[850]},
-		{s:true, r:-10, text:"Mercury retrograde", i:1216, angle: mercuryLongitude[1216]},
-		{s:true, r:0, text:"Mercury direct", i:1297, angle: mercuryLongitude[1297]},
+		{s:true, r:20, text:"Mercury retrograde", i:257, angle: mercuryLongitude[257]},
+		{s:true, r:15, text:"Mercury direct", i:348, angle: mercuryLongitude[348]},
+		{s:false, r:-15, text:"Mercury retrograde", i:753, angle: mercuryLongitude[753]},
+		{s:true, r:15, text:"Mercury direct", i:850, angle: mercuryLongitude[850]},
+		{s:true, r:-15, text:"Mercury retrograde", i:1216, angle: mercuryLongitude[1216]},
+		{s:true, r:20, text:"Mercury direct", i:1297, angle: mercuryLongitude[1297]},
 		{s:true, r:0, text:"Mercury transit", i:1258, angle: mercuryLongitude[1258]},
-		{s:true, r:-10, text:"Jupiter retrograde", i:401, angle: jupiterLongitude[401]},
-		{s:true, r:10, text:"Jupiter direct", i:892, angle: jupiterLongitude[892]},
-		{s:true, r:-10, text:"Saturn retrograde", i:474, angle: saturnLongitude[474]},
-		{s:true, r:0, text:"Saturn direct", i:1040, angle: saturnLongitude[1040]},
-		{s:false, r:-10, text:"Uranus direct", i:25, angle: uranusLongitude[25]},
-		{s:true, r:-10, text:"Uranus retrograde", i:890, angle: uranusLongitude[890]},
+		{s:true, r:-15, text:"Jupiter retrograde", i:401, angle: jupiterLongitude[401]},
+		{s:false, r:20, text:"Jupiter direct", i:892, angle: jupiterLongitude[892]},
+		{s:true, r:0, text:"Saturn retrograde", i:474, angle: saturnLongitude[474]},
+		{s:false, r:-5, text:"Saturn direct", i:1040, angle: saturnLongitude[1040]},
+		{s:false, r:5, text:"Uranus direct", i:25, angle: uranusLongitude[25]},
+		{s:true, r:30, text:"Uranus retrograde", i:890, angle: uranusLongitude[890]},
 		{s:true, r:0, text:"Neptune retrograde", i:684, angle: neptuneLongitude[684]},
-		{s:false, r:-15, text:"Neptune direct", i:1320, angle: neptuneLongitude[1320]},
-		{s:false, r:-15, text:"Venus-Jupiter conjugation", i:86, angle: jupiterLongitude[86]},
-		{s:false, r:5, text:"Venus-Jupiter conjugation", i:1301, angle: jupiterLongitude[1301]},
-		{s:true, r:7, text:"Venus-Saturn conjugation", i:194, angle: saturnLongitude[194]},
-		{s:false, r:0, text:"Venus-Saturn conjugation", i:1378, angle: saturnLongitude[1378]},
-		{s:true, r:15, text:"Venus-Mars conjugation", i:942, angle: marsLongitude[942]},
-		{s:true, r:25, text:"Mars-Earth maximum separation", i:978, angle: marsLongitude[978]},
+		{s:false, r:30, text:"Neptune direct", i:1320, angle: neptuneLongitude[1320]},
+		// {s:false, r:-15, text:"Venus-Jupiter conjugation", i:86, angle: jupiterLongitude[86]},
+		// {s:false, r:5, text:"Venus-Jupiter conjugation", i:1301, angle: jupiterLongitude[1301]},
+		// {s:true, r:7, text:"Venus-Saturn conjugation", i:194, angle: saturnLongitude[194]},
+		// {s:false, r:0, text:"Venus-Saturn conjugation", i:1378, angle: saturnLongitude[1378]},
+		// {s:true, r:15, text:"Venus-Mars conjugation", i:942, angle: marsLongitude[942]},
+		// {s:true, r:25, text:"Mars-Earth maximum separation", i:978, angle: marsLongitude[978]},
 
 	].forEach(el => {
 		let str = el.text;//.toUpperCase();
@@ -500,20 +515,13 @@ loadCSV("2019.csv", function(data){
 		let text = SVG.text(s, 0, 0);
 		let r = outerR + 40 + el.r;
 		let roundedAngle = Math.round((el.angle/Math.PI*180)/360*720)/720*360 *Math.PI/180;
-		// let a = -roundedAngle/Math.PI*180+30;
-
 		let a = pipad(el.i/sunLongitude.length*2*Math.PI) * 180/Math.PI;
-		// let r = innerR + (outerR-innerR)*lonSh(el.angle)/(2*Math.PI);
-		// let x = Math.cos(calendarA)*sunR;
-		// let y = Math.sin(calendarA)*sunR;
-
 		let transform = "rotate("+(-a+90)+") translate(0 "+(-r)+")"
 		if(el.s == false){ SVG.setAttribute(text, "style", textStyleR); }
 		else             { SVG.setAttribute(text, "style", textStyleL); }
 		SVG.setAttribute(text, "transform", transform);
 		textLayer.appendChild(text);
-		
-		// let eventR = innerR + (outerR-innerR) * el.i / sunLongitude.length; // stand in for all arrays
+
 		let eventR = innerR + (outerR-innerR)*lonSh(el.angle)/(2*Math.PI);
 		let l = SVG.line(
 			Math.cos((-a)/180*Math.PI)*(eventR),
@@ -522,15 +530,132 @@ loadCSV("2019.csv", function(data){
 			Math.sin((-a)/180*Math.PI)*(r-3));
 		SVG.setAttribute(l, "stroke", "black");
 		l.setAttribute("stroke-linecap", "round");
-		l.setAttribute("stroke-dasharray", "0.01 3");
+		l.setAttribute("stroke-dasharray", "0.01 2");
+		SVG.setAttribute(l, "stroke-width", 0.666);
+		textLayer.appendChild(l);
+	});
+
+
+[{s:true, r:-20, i:dToI(1, 5), text:"Mercury in Capricorn", angle: mercuryLongitude[dToI(1, 5)]},
+{s:true, r:-10, i:dToI(1, 24), text:"Mercury in Aquarius", angle: mercuryLongitude[dToI(1, 24)]},
+{s:true, r:10, i:dToI(2, 10), text:"Mercury in Pisces", angle: mercuryLongitude[dToI(2, 10)]},
+{s:true, r:-5, i:dToI(4, 17), text:"Mercury in Aries", angle: mercuryLongitude[dToI(4, 17)]},
+{s:true, r:12, i:dToI(5, 6), text:"Mercury in Taurus", angle: mercuryLongitude[dToI(5, 6)]},
+{s:false, r:10, i:dToI(5, 21), text:"Mercury in Gemini", angle: mercuryLongitude[dToI(5, 21)]},
+{s:true, r:-20, i:dToI(6, 4), text:"Mercury in Cancer", angle: mercuryLongitude[dToI(6, 4)]},
+{s:true, r:0, i:dToI(8, 11), text:"Mercury in Leo", angle: mercuryLongitude[dToI(8, 11)]},
+{s:false, r:-16, i:dToI(8, 29), text:"Mercury in Virgo", angle: mercuryLongitude[dToI(8, 29)]},
+{s:true, r:0, i:dToI(9, 14), text:"Mercury in Libra", angle: mercuryLongitude[dToI(9, 14)]},
+{s:true, r:8, i:dToI(10, 3), text:"Mercury in Scorpio", angle: mercuryLongitude[dToI(10, 3)]},
+{s:false, r:10, i:dToI(12, 9), text:"Mercury in Sagittarius", angle: mercuryLongitude[dToI(12, 9)]},
+{s:false, r:5, i:dToI(12, 29), text:"Mercury in Capricorn", angle: mercuryLongitude[dToI(12, 29)]},
+{s:true, r:0, i:dToI(2, 3), text:"Venus in Capricorn", angle: venusLongitude[dToI(2, 3)]},
+{s:true, r:-5, i:dToI(1, 7), text:"Venus in Sagittarius", angle: venusLongitude[dToI(1, 7)]},
+{s:true, r:-12, i:dToI(3, 1), text:"Venus in Aquarius", angle: venusLongitude[dToI(3, 1)]},
+{s:true, r:3, i:dToI(3, 26), text:"Venus in Pisces", angle: venusLongitude[dToI(3, 26)]},
+{s:false, r:25, i:dToI(4, 20), text:"Venus in Aries", angle: venusLongitude[dToI(4, 20)]},
+{s:true, r:20, i:dToI(5, 15), text:"Venus in Taurus", angle: venusLongitude[dToI(5, 15)]},
+{s:true, r:-5, i:dToI(6, 9), text:"Venus in Gemini", angle: venusLongitude[dToI(6, 9)]},
+{s:false, r:0, i:dToI(7, 3), text:"Venus in Cancer", angle: venusLongitude[dToI(7, 3)]},
+{s:true, r:0, i:dToI(7, 28), text:"Venus in Leo", angle: venusLongitude[dToI(7, 28)]},
+{s:false, r:-5, i:dToI(8, 21), text:"Venus in Virgo", angle: venusLongitude[dToI(8, 21)]},
+{s:true, r:20, i:dToI(9, 14), text:"Venus in Libra", angle: venusLongitude[dToI(9, 14)]},
+{s:false, r:-5, i:dToI(10, 8), text:"Venus in Scorpio", angle: venusLongitude[dToI(10, 8)]},
+{s:true, r:5, i:dToI(11, 1), text:"Venus in Sagittarius", angle: venusLongitude[dToI(11, 1)]},
+{s:true, r:30, i:dToI(11, 26), text:"Venus in Capricorn", angle: venusLongitude[dToI(11, 26)]},
+{s:false, r:9, i:dToI(12, 20), text:"Venus in Aquarius", angle: venusLongitude[dToI(12, 20)]},
+{s:true, r:20, i:dToI(2, 14), text:"Mars in Taurus", angle: marsLongitude[dToI(2, 14)]},
+{s:false, r:10, i:dToI(3, 31), text:"Mars in Gemini", angle: marsLongitude[dToI(3, 31)]},
+{s:false, r:20, i:dToI(5, 16), text:"Mars in Cancer", angle: marsLongitude[dToI(5, 16)]},
+{s:true, r:0, i:dToI(7, 2), text:"Mars in Leo", angle: marsLongitude[dToI(7, 2)]},
+{s:false, r:10, i:dToI(8, 18), text:"Mars in Virgo", angle: marsLongitude[dToI(8, 18)]},
+{s:false, r:5, i:dToI(10, 4), text:"Mars in Libra", angle: marsLongitude[dToI(10, 4)]},
+{s:true, r:5, i:dToI(11, 19), text:"Mars in Scorpio", angle: marsLongitude[dToI(11, 19)]},
+{s:false, r:20, i:dToI(12, 2), text:"Jupiter in Capricorn", angle: jupiterLongitude[dToI(12, 2)]},
+{s:true, r:0, i:dToI(3, 6), text:"Uranus in Taurus", angle: uranusLongitude[dToI(3, 6)]},
+	].forEach(el => {
+		let str = el.text;//.toUpperCase();
+		let tX = el.s ? 2 : -2;
+		let s = "<tspan x='"+tX+"px' dy='1.1em'>"+str+"</tspan><tspan x='"+tX+"px' dy='1.1em'>"+indexToDate(el.i)+"</tspan>";
+		let text = SVG.text(s, 0, 0);
+		let r = outerR + 40 + el.r;
+		let roundedAngle = Math.round((el.angle/Math.PI*180)/360*720)/720*360 *Math.PI/180;
+		let a = pipad(el.i/sunLongitude.length*2*Math.PI) * 180/Math.PI;
+		let transform = "rotate("+(-a+90)+") translate(0 "+(-r)+")"
+		if(el.s == false){ SVG.setAttribute(text, "style", textStyleR); }
+		else             { SVG.setAttribute(text, "style", textStyleL); }
+		SVG.setAttribute(text, "transform", transform);
+		textLayer.appendChild(text);
+
+		let eventR = innerR + (outerR-innerR)*lonSh(el.angle)/(2*Math.PI);
+		let l = SVG.line(
+			Math.cos((-a)/180*Math.PI)*(eventR),
+			Math.sin((-a)/180*Math.PI)*(eventR),
+			Math.cos((-a)/180*Math.PI)*(r-3),
+			Math.sin((-a)/180*Math.PI)*(r-3));
+		SVG.setAttribute(l, "stroke", "black");
+		l.setAttribute("stroke-linecap", "round");
+		l.setAttribute("stroke-dasharray", "0.01 2");
 		SVG.setAttribute(l, "stroke-width", 0.666);
 		textLayer.appendChild(l);
 
+	})
+
+
+	// let moonTextStyle = "fill: white; font-family: Avenir Next; font-style: bold; font-size: 5px; text-anchor: end;";
+	// fullMoons.forEach(el => {
+	// 	let r = innerR + (outerR-innerR) * el.i / moonLongitude.length;
+	// 	let a = -moonLongitude[el.i]/Math.PI*180+30 - 2;
+	// 	let transform = "rotate("+(a-90)+") translate(0 "+(-r+2.2)+")"
+	// 	let radius = innerR + (outerR-innerR) * el.i / moonLongitude.length;
+	// 	let x = 0;//Math.cos(moonLongitude[el.i]) * radius;
+	// 	let y = 0;//Math.sin(moonLongitude[el.i]) * radius;
+	// 	let t = SVG.text("Full " + el.month + "." + el.day, x, y);
+	// 	SVG.setAttribute(t, "style", moonTextStyle);
+	// 	SVG.setAttribute(t, "transform", transform);
+	// 	textLayer.appendChild(t);
+	// });
+
+	let innerTextStyle = "fill: black; font-family: Avenir Next; font-size: 7px; text-anchor: end;";
+	// let textStyleR = "fill: black; font-family: Avenir Next; font-size: 7px; text-anchor: end;";
+	fullMoons.forEach(el => {
+		// let str = el.text;//.toUpperCase();
+		let tX = 2;//el.s ? 2 : -2;
+		let str = "Full in " + el.zodiac;
+		let s = "<tspan x='"+tX+"px' dy='1.1em'>"+str+"</tspan><tspan x='"+tX+"px' dy='1.1em'>"+indexToDate(el.i)+"</tspan>";
+		let text = SVG.text(s, 0, 0);
+		let r = innerR - 25;
+		let roundedAngle = Math.round((moonLongitude[el.i]/Math.PI*180)/360*720)/720*360 *Math.PI/180;
+		let a = pipad(el.i/sunLongitude.length*2*Math.PI) * 180/Math.PI;
+		let transform = "rotate("+(-a+90)+") translate(0 "+(-r-20)+") rotate(-90) "
+		SVG.setAttribute(text, "style", innerTextStyle);
+		SVG.setAttribute(text, "transform", transform);
+		textLayer.appendChild(text);
+		
+		let eventR = innerR + (outerR-innerR)*lonSh(moonLongitude[el.i])/(2*Math.PI);
+		let l = SVG.line(
+			Math.cos((-a)/180*Math.PI)*eventR,
+			Math.sin((-a)/180*Math.PI)*eventR,
+			Math.cos((-a)/180*Math.PI)*r,
+			Math.sin((-a)/180*Math.PI)*r);
+		SVG.setAttribute(l, "stroke", "black");
+		l.setAttribute("stroke-linecap", "round");
+		l.setAttribute("stroke-dasharray", "0.01 2");
+		SVG.setAttribute(l, "stroke-width", 0.666);
+		textLayer.appendChild(l);
 	});
+
 
 
 	function indexToDate(index){
 		return month[index] + "." + day[index];
+	}
+
+	function dToI(m,d){
+		for(var i = 0; i < day.length; i++){
+			if(month[i] == m && day[i] == d){ return i; }
+		}
+		return 0; // should throw
 	}
 
 });

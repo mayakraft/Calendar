@@ -101,7 +101,7 @@ loadCSV("2019.csv", function(data){
 		{month:10, day:13, i: 1144},
 		{month:11, day:12, i: 1263},
 		{month:12, day:12, i: 1382}
-	];	
+	];
 
 	// translate(width*0.5, height*0.5);
 	// rotate(-1.0/24.0*Math.PI*2);
@@ -154,13 +154,14 @@ loadCSV("2019.csv", function(data){
 	SVG.setAttribute(dataTextLayer, "transform", [translateString, rotateString].join(" "));
 
 	sketch.appendChild(layer1);
-	layer1.appendChild(sunLayer);
 	layer1.appendChild(gridLayer);
+	layer1.appendChild(moonLayer);
+	layer1.appendChild(sunLayer);
 
 	sketch.appendChild(dataTextLayer);
 
 	sketch.appendChild(layer2);
-	layer2.appendChild(moonLayer);
+	// layer2.appendChild(moonLayer);
 	layer2.appendChild(planetsLayer);
 	layer2.appendChild(dataLayer);
 
@@ -181,7 +182,7 @@ loadCSV("2019.csv", function(data){
 			Math.sin(a)*outerR,
 			Math.cos(a)*r2,
 			Math.sin(a)*r2);
-		SVG.setAttribute(l, "stroke", "#777");
+		SVG.setAttribute(l, "stroke", "#aaa");
 		SVG.setAttribute(l, "stroke-width", 0.666);
 		gridLayer.appendChild(l);
 	});
@@ -196,7 +197,7 @@ loadCSV("2019.csv", function(data){
 	// 12 zodiac-dividing lines
 	for(let i = 0; i < Math.PI*2; i += Math.PI*2/12 ){
 		let l = SVG.line(Math.cos(i)*innerR, Math.sin(i)*innerR, Math.cos(i)*outerR, Math.sin(i)*outerR);
-		SVG.setAttribute(l, "stroke", "#777")
+		SVG.setAttribute(l, "stroke", "#aaa")
 		SVG.setAttribute(l, "stroke-width", 0.666);
 		gridLayer.appendChild(l);
 	}
@@ -250,7 +251,7 @@ loadCSV("2019.csv", function(data){
 			let radius = innerR + (outerR-innerR) * li/arr.length;
 			return [Math.cos(l)*radius, Math.sin(l)*radius];
 		})
-	)
+	).reverse()
 	// planetLines.forEach((p,i) =>{
 	// 	let planetLine = SVG.polyline(p);
 	// 	SVG.setAttribute(planetLine, "stroke", planets[i].color);
@@ -259,12 +260,8 @@ loadCSV("2019.csv", function(data){
 	// 	planetsLayer.appendChild(planetLine);
 	// });
 
-
-	planetLines.reverse().forEach((p,piReverse,parr) => {
+	planetLines.forEach((p,piReverse,parr) => {
 		let pi = parr.length - 1 - piReverse;
-		let planetLayer = SVG.group();
-		SVG.setAttribute(planetLayer, "id", planets[pi].name);
-
 		p.forEach((point, i, arr) => {
 			if(i == arr.length-1){ return; }
 			let distance = 1.0 - (planets[pi].distance[i] - planetMinMax[pi][0]) / (planetMinMax[pi][1] - planetMinMax[pi][0])
@@ -272,8 +269,11 @@ loadCSV("2019.csv", function(data){
 			SVG.setAttribute(planetWhite, "stroke", "white");
 			SVG.setAttribute(planetWhite, "stroke-linecap", "round");
 			SVG.setAttribute(planetWhite, "stroke-width", 0.25 + 4*distance + 2);
-			planetLayer.appendChild(planetWhite);
+			planetsLayer.appendChild(planetWhite);
 		});
+	});
+	planetLines.forEach((p,piReverse,parr) => {
+		let pi = parr.length - 1 - piReverse;
 		p.forEach((point, i, arr) => {
 			if(i == arr.length-1){ return; }
 			let distance = 1.0 - (planets[pi].distance[i] - planetMinMax[pi][0]) / (planetMinMax[pi][1] - planetMinMax[pi][0])
@@ -281,10 +281,34 @@ loadCSV("2019.csv", function(data){
 			SVG.setAttribute(planetLine, "stroke", "black");
 			SVG.setAttribute(planetLine, "stroke-linecap", "round");
 			SVG.setAttribute(planetLine, "stroke-width", 0.25 + 4*distance);
-			planetLayer.appendChild(planetLine);
+			planetsLayer.appendChild(planetLine);
 		});
-		planetsLayer.appendChild(planetLayer);
 	});
+	// planetLines.reverse().forEach((p,piReverse,parr) => {
+	// 	let pi = parr.length - 1 - piReverse;
+	// 	let planetLayer = SVG.group();
+	// 	SVG.setAttribute(planetLayer, "id", planets[pi].name);
+
+	// 	p.forEach((point, i, arr) => {
+	// 		if(i == arr.length-1){ return; }
+	// 		let distance = 1.0 - (planets[pi].distance[i] - planetMinMax[pi][0]) / (planetMinMax[pi][1] - planetMinMax[pi][0])
+	// 		let planetWhite = SVG.line(arr[i][0], arr[i][1], arr[i+1][0], arr[i+1][1]);
+	// 		SVG.setAttribute(planetWhite, "stroke", "white");
+	// 		SVG.setAttribute(planetWhite, "stroke-linecap", "round");
+	// 		SVG.setAttribute(planetWhite, "stroke-width", 0.25 + 4*distance + 2);
+	// 		planetLayer.appendChild(planetWhite);
+	// 	});
+	// 	p.forEach((point, i, arr) => {
+	// 		if(i == arr.length-1){ return; }
+	// 		let distance = 1.0 - (planets[pi].distance[i] - planetMinMax[pi][0]) / (planetMinMax[pi][1] - planetMinMax[pi][0])
+	// 		let planetLine = SVG.line(arr[i][0], arr[i][1], arr[i+1][0], arr[i+1][1]);
+	// 		SVG.setAttribute(planetLine, "stroke", "black");
+	// 		SVG.setAttribute(planetLine, "stroke-linecap", "round");
+	// 		SVG.setAttribute(planetLine, "stroke-width", 0.25 + 4*distance);
+	// 		planetLayer.appendChild(planetLine);
+	// 	});
+	// 	planetsLayer.appendChild(planetLayer);
+	// });
 
 
 
@@ -304,13 +328,13 @@ loadCSV("2019.csv", function(data){
 				let moonBack = SVG.circle( 
 					Math.cos(moonLongitude[i]) * radius,
 					Math.sin(moonLongitude[i]) * radius,
-					4);
+					5.5);
 				SVG.setAttribute(moonBack, "fill", "white");
 				SVG.setAttribute(moonBack, "stroke", "black");
 				SVG.setAttribute(moonBack, "stroke-width", 1);
 				dataLayer.appendChild(moonBack);
 				// var r = (phase == 0) ? 2.75 : 4
-				var r = 2.75;
+				var r = 4.5;
 				let moon = drawMoon( 
 					Math.cos(moonLongitude[i]) * radius,
 					Math.sin(moonLongitude[i]) * radius,
@@ -382,7 +406,7 @@ loadCSV("2019.csv", function(data){
 		{s:true, r:-10, text:"Equinox", i:solstice[2], angle: sunLongitude[solstice[2]]},
 		{s:false, r:0, text:"Mercury retrograde", i:257, angle: mercuryLongitude[257]},
 		{s:true, r:30, text:"Mercury direct", i:348, angle: mercuryLongitude[348]},
-		{s:true, r:-2.5, text:"Mercury retrograde", i:753, angle: mercuryLongitude[753]},
+		{s:false, r:-5, text:"Mercury retrograde", i:753, angle: mercuryLongitude[753]},
 		{s:true, r:-7.5, text:"Mercury direct", i:850, angle: mercuryLongitude[850]},
 		{s:true, r:15, text:"Mercury retrograde", i:1216, angle: mercuryLongitude[1216]},
 		{s:true, r:0, text:"Mercury direct", i:1297, angle: mercuryLongitude[1297]},
@@ -401,6 +425,7 @@ loadCSV("2019.csv", function(data){
 		{s:false,r:0, text:"Venus-Saturn conjugation", i:1378, angle: saturnLongitude[1378]},
 		{s:true, r:-15, text:"Venus-Mars conjugation", i:942, angle: marsLongitude[942]},
 		{s:true, r:0, text:"Mars-Earth maximum separation", i:978, angle: marsLongitude[978]},
+		{s:true, r:-3, text:"total lunar eclipse", i:82, angle: moonLongitude[82]},
 
 	].forEach(el => {
 		let str = el.text;//.toUpperCase();
@@ -442,6 +467,38 @@ loadCSV("2019.csv", function(data){
 		SVG.setAttribute(t, "transform", transform);
 		textLayer.appendChild(t);
 	});
+
+
+	// font-weight:bold; 
+	let angleTextStyleL = "fill:#ccc; font-family:Avenir Next; font-size:9px; text-anchor: start;";
+	let angleTextStyleR = "fill:#ccc; font-family:Avenir Next; font-size:9px; text-anchor: end;";
+
+	[
+		{s:true, r:0, a:0.5, text:"0°", angle:0 },
+		{s:false, r:0, a:0, text:"30°", angle:30 },
+		{s:true, r:0, a:0, text:"60°", angle:60 },
+		{s:true, r:0, a:0, text:"90°", angle:90 },
+		{s:true, r:0, a:0, text:"120°", angle:120 },
+		{s:true, r:0, a:0, text:"150°", angle:150 },
+		{s:true, r:0, a:0, text:"180°", angle:180 },
+		{s:true, r:0, a:0, text:"210°", angle:210 },
+		{s:false, r:0, a:0, text:"240°", angle:240 },
+		// {s:true, r:0, a:0, text:"270°", angle:270 },
+		{s:true, r:0, a:0, text:"300°", angle:300 },
+		{s:true, r:0, a:0, text:"330°", angle:330 },
+	].forEach(el => {
+		let str = el.text;//.toUpperCase();
+		let tX = el.a + (el.s ? 0.5 : -0.5);
+		let text = SVG.text(str, 0, 0);
+		let r = outerR + 4 + el.r;
+		let transform = "rotate("+(-el.angle+30-90+tX)+") translate(0 "+(-r)+")"
+		if(el.s == false){ SVG.setAttribute(text, "style", angleTextStyleR); }
+		else             { SVG.setAttribute(text, "style", angleTextStyleL); }
+		SVG.setAttribute(text, "transform", transform);
+		textLayer.appendChild(text);
+	});
+
+
 
 	function indexToDate(index){
 		return month[index] + "." + day[index];
