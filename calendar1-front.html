@@ -95,29 +95,29 @@ loadCSV("2019.csv", function(data){
 	let outerR = 280;
 
 	let backRect = SVG.rect(0, 0, w, h);
-	SVG.setAttribute(backRect, "fill", "black");
+	backRect.setAttribute("fill", "black");
 	sketch.appendChild(backRect);
 
 	let layer = SVG.group();
-	SVG.setAttribute(layer, "id", "transform-layer");
+	layer.setAttribute("id", "transform-layer");
 	let translateString = "translate(" + (w*0.5) + " " + (h*0.5) + ")";
 	let rotateString = 	"rotate(" + (-1/24*360) +")";
 	let transform = translateString + " " + rotateString;
-	SVG.setAttribute(layer, "transform", transform);
+	layer.setAttribute("transform", transform);
 	sketch.appendChild(layer);
 
 	let textLayer = SVG.group();
-	SVG.setAttribute(textLayer, "transform", translateString);
+	textLayer.setAttribute("transform", translateString);
 	sketch.appendChild(textLayer);
 
 	let gridLayer = SVG.group();
 	let moonLayer = SVG.group();
 	let sunLayer = SVG.group();
 	let planetsLayer = SVG.group();
-	SVG.setAttribute(gridLayer, "id", "grid");
-	SVG.setAttribute(moonLayer, "id", "moon");
-	SVG.setAttribute(sunLayer, "id", "sun");
-	SVG.setAttribute(planetsLayer, "id", "planets");
+	gridLayer.setAttribute("id", "grid");
+	moonLayer.setAttribute("id", "moon");
+	sunLayer.setAttribute("id", "sun");
+	planetsLayer.setAttribute("id", "planets");
 	layer.appendChild(gridLayer);
 	layer.appendChild(moonLayer);
 	layer.appendChild(sunLayer);
@@ -136,21 +136,21 @@ loadCSV("2019.csv", function(data){
 	// 		Math.sin(a)*outerR,
 	// 		Math.cos(a)*r2,
 	// 		Math.sin(a)*r2);
-	// 	SVG.setAttribute(l, "stroke", "#fff");
+	// 	(l.setAttribute"stroke", "#fff");
 	// 	gridLayer.appendChild(l);
 	// });
 	// // 12 month-dividing circles
 	// for(let i = 12; i >= 0; i--){
 	//    let r = innerR + (outerR-innerR) * i/12.0;
 	//    let circle = SVG.circle(0, 0, r);
-	//    SVG.setAttribute(circle, "stroke", "#fff");
-	//    SVG.setAttribute(circle, "fill", "none");
+	//    circle.setAttribute("stroke", "#fff");
+	//    circle.setAttribute("fill", "none");
 	//    gridLayer.appendChild(circle);
 	// }
 	// // 12 zodiac-dividing lines
 	// for(let i = 0; i < Math.PI*2; i += Math.PI*2/12 ){
 	// 	let l = SVG.line(Math.cos(i)*innerR, Math.sin(i)*innerR, Math.cos(i)*outerR, Math.sin(i)*outerR);
-	// 	SVG.setAttribute(l, "stroke", "#fff")
+	// 	(l.setAttribute"stroke", "#fff")
 	// 	gridLayer.appendChild(l);
 	// }
 
@@ -167,9 +167,9 @@ loadCSV("2019.csv", function(data){
 		);
 		// let gray = 255 - phase0_1 * (255-33) + 33;
 		let gray = 200 - phase0_1 * (200);
-		SVG.setAttribute(moonLine, "stroke-width", 6 - phase0_1*5);
-		SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-		SVG.setAttribute(moonLine, "stroke-linecap", "round");
+		moonLine.setAttribute("stroke-width", 6 - phase0_1*5);
+		moonLine.setAttribute("stroke", "rgb("+gray+","+gray+","+gray+")");
+		moonLine.setAttribute("stroke-linecap", "round");
 		moonLayer.appendChild(moonLine);
 	}
 
@@ -183,9 +183,9 @@ loadCSV("2019.csv", function(data){
 			Math.cos(sunLongitude[i])*calendarR,
 			Math.sin(sunLongitude[i])*calendarR
 		);
-		SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9.1)*2);
-		SVG.setAttribute(sunLine, "stroke-linecap", "round");
-		SVG.setAttribute(sunLine, "stroke", "rgb(222,210,33)");
+		sunLine.setAttribute("stroke-width", (daylight[i]-9.1)*2);
+		sunLine.setAttribute("stroke-linecap", "round");
+		sunLine.setAttribute("stroke", "rgb(222,210,33)");
 		sunLayer.appendChild(sunLine);
 	}
 
@@ -198,9 +198,9 @@ loadCSV("2019.csv", function(data){
 	// );
 	// polylinePoints.forEach((p,i) =>{
 	// 	let planetLine = SVG.polyline(p);
-	// 	SVG.setAttribute(planetLine, "stroke", planets[i].color);
-	// 	SVG.setAttribute(planetLine, "fill", "none");
-	// 	SVG.setAttribute(planetLine, "stroke-width", 2);
+	// 	planetLine.setAttribute("stroke", planets[i].color);
+	// 	planetLine.setAttribute("fill", "none");
+	// 	planetLine.setAttribute("stroke-width", 2);
 	// 	planetsLayer.appendChild(planetLine);
 
 	// });
@@ -210,22 +210,22 @@ loadCSV("2019.csv", function(data){
 		let str = zodiac.toUpperCase();
 		let text = SVG.text(str, 0, 0);
 		let transform = "rotate("+i/12*360+") translate(0 "+(-outerR - 20)+")"
-		SVG.setAttribute(text, "style", tStyleZodiac);
-		SVG.setAttribute(text, "transform", transform);
+		text.setAttribute("style", tStyleZodiac);
+		text.setAttribute("transform", transform);
 		textLayer.appendChild(text);
 	})
 	let tStyleYear = "fill:rgb(222,210,33); font-family:Avenir Next; font-size:14px; text-anchor: middle;";
 
 	let lastYearText = SVG.text(parseInt(year[0]) - 1, 0, 0);
 	let lastTransform = "translate(0 "+(-innerR + 20)+")"
-	SVG.setAttribute(lastYearText, "style", tStyleYear);
-	SVG.setAttribute(lastYearText, "transform", lastTransform);
+	lastYearText.setAttribute("style", tStyleYear);
+	lastYearText.setAttribute("transform", lastTransform);
 	textLayer.appendChild(lastYearText);
 
 	let nextYearText = SVG.text(parseInt(year[0]) + 1, 0, 0);
 	let nextTransform = "translate(0 "+(-outerR)+")"
-	SVG.setAttribute(nextYearText, "style", tStyleYear);
-	SVG.setAttribute(nextYearText, "transform", nextTransform);
+	nextYearText.setAttribute("style", tStyleYear);
+	nextYearText.setAttribute("transform", nextTransform);
 	textLayer.appendChild(nextYearText);
 
 });

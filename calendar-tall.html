@@ -68,7 +68,7 @@ loadCSV("2019.csv", function(data){
 	
 
 	let backRect = SVG.rect(0, 0, w, h);
-	SVG.setAttribute(backRect, "fill", "#222");
+	backRect.setAttribute("fill", "#222");
 	sketch.appendChild(backRect);
 
 	let rowH = 32;
@@ -87,27 +87,27 @@ loadCSV("2019.csv", function(data){
 			let y = ypad + week * rowH + month[i]*rowH;
 			if(isFull(i)) {
 				let moonLine = SVG.circle(x,y,r);
-				SVG.setAttribute(moonLine, "fill", "none");
-				SVG.setAttribute(moonLine, "stroke", "#c8c8c8");
-				SVG.setAttribute(moonLine, "stroke-weight", 1);
+				moonLine.setAttribute("fill", "none");
+				moonLine.setAttribute("stroke", "#c8c8c8");
+				moonLine.setAttribute("stroke-weight", 1);
 				sketch.appendChild(moonLine);
 				let moonCenter = SVG.circle(x,y,r-2);
-				SVG.setAttribute(moonCenter, "fill", "#c8c8c8");
-				SVG.setAttribute(moonCenter, "stroke", "none");
+				moonCenter.setAttribute("fill", "#c8c8c8");
+				moonCenter.setAttribute("stroke", "none");
 				sketch.appendChild(moonCenter);
 			}
 			else if(isNew(i)) {
 				let moonLine = SVG.circle(x,y,r);
-				SVG.setAttribute(moonLine, "fill", "none");
-				SVG.setAttribute(moonLine, "stroke", "#c8c8c8");
-				SVG.setAttribute(moonLine, "stroke-weight", 1);
+				moonLine.setAttribute("fill", "none");
+				moonLine.setAttribute("stroke", "#c8c8c8");
+				moonLine.setAttribute("stroke-weight", 1);
 				sketch.appendChild(moonLine);
 			}
 			else{ 
 				let moonLine = drawMoon(x, y, r, moonPhase[i]);
-				SVG.setAttribute(moonLine, "fill", "#c8c8c8");
-				SVG.setAttribute(moonLine, "stroke", "none");
-				// SVG.setAttribute(moonLine, "stroke-linecap", "round");
+				moonLine.setAttribute("fill", "#c8c8c8");
+				moonLine.setAttribute("stroke", "none");
+				// moonLine.setAttribute("stroke-linecap", "round");
 				sketch.appendChild(moonLine);
 			}
 
@@ -117,9 +117,9 @@ loadCSV("2019.csv", function(data){
 				// let l0 = SVG.line(lineX, y - rowH*.5, lineX, y + rowH*0.5);
 				// let l1 = SVG.line(xpad, y + rowH*.5, lineX, y + rowH*0.5);
 				// let l2 = SVG.line(lineX, y - rowH*.5, w - colW, y - rowH*0.5);
-				// SVG.setAttribute(l0, "stroke", "#c8c8c8");
-				// SVG.setAttribute(l1, "stroke", "#c8c8c8");
-				// SVG.setAttribute(l2, "stroke", "#c8c8c8");
+				// l0.setAttribute("stroke", "#c8c8c8");
+				// l1.setAttribute("stroke", "#c8c8c8");
+				// l2.setAttribute("stroke", "#c8c8c8");
 				// sketch.appendChild(l0);
 				// sketch.appendChild(l1);
 				// sketch.appendChild(l2);
@@ -131,7 +131,7 @@ loadCSV("2019.csv", function(data){
 
 	// let textStyle = "fill:#c8c8c8; font-family:Avenir Next;font-size:10px; text-anchor: middle;";
 	// let yearText = SVG.text(parseInt(year[0]), w*0.5, 40);
-	// SVG.setAttribute(yearText, "style", textStyle);
+	// yearText.setAttribute("style", textStyle);
 	// sketch.appendChild(yearText);
 
 	function isFull(i){
@@ -159,13 +159,13 @@ function drawMoon(x, y, r, phase){
 	points = points.concat( arr0.map(a => ([r*Math.sin(a)*ph1, r*Math.cos(a)])) );
 	points = points.concat( arr1.map(a => ([r*Math.sin(a)*ph2, r*Math.cos(a)])) );
 	let poly = SVG.polygon(points);
-	// SVG.setAttribute(poly, "fill", "rgb(200, 198, 199)");
-	// SVG.setAttribute(poly, "stroke", "none");
+	// poly.setAttribute("fill", "rgb(200, 198, 199)");
+	// poly.setAttribute("stroke", "none");
 	let translateString = "translate(" + x.toFixed(4) + " " + y.toFixed(4) + ")";
 	let rotateString = 	"rotate(" + (Math.PI*0.2 - Math.PI/2)/Math.PI*180 + ")";
 	// rotate(PI*0.2);
 	let transform = [translateString, rotateString].join(" ");
-	SVG.setAttribute(poly, "transform", transform);
+	poly.setAttribute("transform", transform);
 	return poly;
 	// translate(x,y);
 	// rotate(Math.PI*0.2 - Math.PI/2);

@@ -26,7 +26,7 @@ loadCSV("2019.csv", function(data){
 	console.log(data);
 
 	let backRect = SVG.rect(0,0,w,h);
-	SVG.setAttribute(backRect, "fill", "#444");
+	backRect.setAttribute("fill", "#444");
 	sketch.appendChild(backRect);
 
 });

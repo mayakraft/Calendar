@@ -99,20 +99,20 @@ loadCSV("2019.csv", function(data){
 	let outerR = 280;
 
 	let backRect = SVG.rect(0, 0, w, h);
-	SVG.setAttribute(backRect, "fill", "black");
+	backRect.setAttribute("fill", "black");
 	sketch.appendChild(backRect);
 
 	let layer = SVG.group();
-	SVG.setAttribute(layer, "id", "transform-layer");
+	layer.setAttribute("id", "transform-layer");
 	let translateString = "translate(" + (w*0.5) + " " + (h*0.5) + ")";
 	let rotateString = 	"rotate(-90)";
 	let reflectString = "scale(1 1)";
 	let transform = [translateString, reflectString, rotateString].join(" ");
-	SVG.setAttribute(layer, "transform", transform);
+	layer.setAttribute("transform", transform);
 	sketch.appendChild(layer);
 
 	let textLayer = SVG.group();
-	SVG.setAttribute(textLayer, "transform", translateString);
+	textLayer.setAttribute("transform", translateString);
 	sketch.appendChild(textLayer);
 
 	let gridLayer = SVG.group();
@@ -120,11 +120,11 @@ loadCSV("2019.csv", function(data){
 	let sunLayer = SVG.group();
 	let planetsLayer = SVG.group();
 	let dataLayer = SVG.group();
-	SVG.setAttribute(gridLayer, "id", "grid");
-	SVG.setAttribute(moonLayer, "id", "moon");
-	SVG.setAttribute(sunLayer, "id", "sun");
-	SVG.setAttribute(planetsLayer, "id", "planets");
-	SVG.setAttribute(dataLayer, "id", "data");
+	gridLayer.setAttribute("id", "grid");
+	moonLayer.setAttribute("id", "moon");
+	sunLayer.setAttribute("id", "sun");
+	planetsLayer.setAttribute("id", "planets");
+	dataLayer.setAttribute("id", "data");
 	layer.appendChild(gridLayer);
 	layer.appendChild(planetsLayer);
 	layer.appendChild(moonLayer);
@@ -141,9 +141,9 @@ loadCSV("2019.csv", function(data){
 			Math.cos(a)*outerR,
 			Math.sin(a)*outerR
 		);
-		SVG.setAttribute(gridLine, "stroke", gridColor);
-		SVG.setAttribute(gridLine, "stroke-linecap", "round");
-		SVG.setAttribute(gridLine, "stroke-width", 0.5);
+		gridLine.setAttribute("stroke", gridColor);
+		gridLine.setAttribute("stroke-linecap", "round");
+		gridLine.setAttribute("stroke-width", 0.5);
 		gridLayer.appendChild(gridLine);
 	});
 
@@ -151,22 +151,22 @@ loadCSV("2019.csv", function(data){
 	Array.from(Array(12)).forEach(i =>{
 		let r = innerR + (outerR-innerR)*i/12.0;
 		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
-		SVG.setAttribute(arc, "fill", "none");
-		SVG.setAttribute(arc, "stroke", "white");
-		SVG.setAttribute(arc, "stroke-linecap", "round");
-		SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
+		arc.setAttribute("fill", "none");
+		arc.setAttribute("stroke", "white");
+		arc.setAttribute("stroke-linecap", "round");
+		arc.setAttribute("stroke-dasharray", "0.01 10");
 		// gridLayer.appendChild(arc);
 	});
 	// outlines
 	[0, 12].forEach(i =>{
 		let r = innerR + (outerR-innerR)*i/12.0;
 		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
-		SVG.setAttribute(arc, "fill", "none");
-		SVG.setAttribute(arc, "stroke", gridColor);
-		SVG.setAttribute(arc, "stroke-linecap", "round");
-		SVG.setAttribute(arc, "stroke-width", 0.5);
-		// SVG.setAttribute(arc, "stroke", "white");
-		// SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
+		arc.setAttribute("fill", "none");
+		arc.setAttribute("stroke", gridColor);
+		arc.setAttribute("stroke-linecap", "round");
+		arc.setAttribute("stroke-width", 0.5);
+		// arc.setAttribute("stroke", "white");
+		// arc.setAttribute("stroke-dasharray", "0.01 10");
 		gridLayer.appendChild(arc);
 	});
 
@@ -181,8 +181,8 @@ loadCSV("2019.csv", function(data){
 	// 		Math.cos(a)*outerR,
 	// 		Math.sin(a)*outerR
 	// 	);
-	// 	SVG.setAttribute(gridLine, "stroke", "white");
-	// 	SVG.setAttribute(gridLine, "stroke-width", 0.5);
+	// 	gridLine.setAttribute("stroke", "white");
+	// 	gridLine.setAttribute("stroke-width", 0.5);
 	// 	gridLayer.appendChild(gridLine);
 	// }
 	// sun
@@ -200,10 +200,10 @@ loadCSV("2019.csv", function(data){
 				Math.sin(lastCalendarA)*lastSunR,
 				Math.cos(calendarA)*sunR,
 				Math.sin(calendarA)*sunR);
-			SVG.setAttribute(sunLine, "stroke", "rgb(222,210,33)");
-			SVG.setAttribute(sunLine, "stroke-linecap", "round");
-			// SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9)*7+.2);
-			SVG.setAttribute(sunLine, "stroke-width", (daylight[i]-9)*2);
+			sunLine.setAttribute("stroke", "rgb(222,210,33)");
+			sunLine.setAttribute("stroke-linecap", "round");
+			// sunLine.setAttribute("stroke-width", (daylight[i]-9)*7+.2);
+			sunLine.setAttribute("stroke-width", (daylight[i]-9)*2);
 			sunLayer.appendChild(sunLine);
 		}
 	}
@@ -226,7 +226,7 @@ loadCSV("2019.csv", function(data){
 			let dLastR = lastMoonR - (innerR + (outerR-innerR)*lon_2/(2*Math.PI));
 			if(dR > 0 && dLastR <= 0){
 				// let moonLine = SVG.line(0, 0, Math.cos(calendarA)*moonR, Math.sin(calendarA)*moonR);
-				// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
+				// moonLine.setAttribute("stroke", "rgb("+gray+","+gray+","+gray+")");
 				// moonLayer.appendChild(moonLine);
 			}
 		}
@@ -237,10 +237,10 @@ loadCSV("2019.csv", function(data){
 				Math.sin(lastCalendarA)*lastMoonR,
 				Math.cos(calendarA)*moonR,
 				Math.sin(calendarA)*moonR);
-			// SVG.setAttribute(moonLine, "stroke", "rgb("+gray+","+gray+","+gray+")");
-			SVG.setAttribute(moonLine, "stroke", "rgb(200, 198, 199)");
-			SVG.setAttribute(moonLine, "stroke-width", phase*2);
-			SVG.setAttribute(moonLine, "stroke-linecap", "round");
+			// moonLine.setAttribute("stroke", "rgb("+gray+","+gray+","+gray+")");
+			moonLine.setAttribute("stroke", "rgb(200, 198, 199)");
+			moonLine.setAttribute("stroke-width", phase*2);
+			moonLine.setAttribute("stroke-linecap", "round");
 			moonLayer.appendChild(moonLine);
 		}
 	}
@@ -258,9 +258,9 @@ loadCSV("2019.csv", function(data){
 				let x = Math.cos(calendarA)*moonR;
 				let y = Math.sin(calendarA)*moonR;
 				let moonBack = SVG.circle(x, y, 10)
-				SVG.setAttribute(moonBack, "fill", "black");
-				SVG.setAttribute(moonBack, "stroke", "rgb(200, 198, 199)");
-				SVG.setAttribute(moonBack, "stroke-width", 0.5);
+				moonBack.setAttribute("fill", "black");
+				moonBack.setAttribute("stroke", "rgb(200, 198, 199)");
+				moonBack.setAttribute("stroke-width", 0.5);
 				dataLayer.appendChild(moonBack);
 				let moonShape = drawMoon(x, y, 9, moonPhase[i]);
 				dataLayer.appendChild(moonShape);
@@ -286,9 +286,9 @@ loadCSV("2019.csv", function(data){
 	// 	let x = Math.cos(sunA)*sunR;
 	// 	let y = Math.sin(sunA)*sunR;
 	// 	let circle = SVG.circle(x, y, 10);
-	// 	SVG.setAttribute(circle, "stroke", "black");
-	// 	SVG.setAttribute(circle, "fill", "white");
-	// 	SVG.setAttribute(circle, "stroke-width", "2.5");
+	// 	circle.setAttribute("stroke", "black");
+	// 	circle.setAttribute("fill", "white");
+	// 	circle.setAttribute("stroke-width", "2.5");
 	// 	dataLayer.appendChild(circle);
 	// })
 
@@ -367,8 +367,8 @@ loadCSV("2019.csv", function(data){
 		let text = SVG.text(month.toUpperCase(), 0, 0);
 		let angle = pipad(i / 12 * 2*Math.PI) / Math.PI * 180 + 90 + 15;
 		let transform = "rotate("+angle+") translate(0 "+(-outerR - 12)+")"
-		SVG.setAttribute(text, "style", tMonthStyle);
-		SVG.setAttribute(text, "transform", transform);
+		text.setAttribute("style", tMonthStyle);
+		text.setAttribute("transform", transform);
 		dataLayer.appendChild(text);
 	})
 
@@ -379,8 +379,8 @@ loadCSV("2019.csv", function(data){
 		let text = SVG.text(zodiac, 0, 0);
 		let radius = -innerR - (outerR-innerR)*(i+0.2)/12;
 		let transform = "rotate(90) translate(0 "+radius+")"
-		SVG.setAttribute(text, "style", zodiacStyle);
-		SVG.setAttribute(text, "transform", transform);
+		text.setAttribute("style", zodiacStyle);
+		text.setAttribute("transform", transform);
 		dataLayer.appendChild(text);
 	});
 
@@ -397,12 +397,12 @@ function drawMoon(x, y, r, phase){
 	points = points.concat( arr.map(a => ([r*Math.sin(a)*ph1, r*Math.cos(a)])) );
 	points = points.concat( arr.reverse().map(a => ([r*Math.sin(a)*ph2, r*Math.cos(a)])) );
 	let poly = SVG.polygon(points);
-	SVG.setAttribute(poly, "fill", "rgb(200, 198, 199)");
-	SVG.setAttribute(poly, "stroke", "none");
+	poly.setAttribute("fill", "rgb(200, 198, 199)");
+	poly.setAttribute("stroke", "none");
 	let translateString = "translate(" + x.toFixed(4) + " " + y.toFixed(4) + ")";
 	let rotateString = 	"rotate(" + (-Math.PI*0.2 + Math.PI/2)/Math.PI*180 + ")";
 	let transform = [translateString, rotateString].join(" ");
-	SVG.setAttribute(poly, "transform", transform);
+	poly.setAttribute("transform", transform);
 	return poly;
 	// translate(x,y);
 	// rotate(Math.PI*0.2 - Math.PI/2);
