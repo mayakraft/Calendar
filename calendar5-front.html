@@ -150,7 +150,7 @@ loadCSV("2019.csv", function(data){
 	// outer month lines
 	Array.from(Array(12)).forEach(i =>{
 		let r = innerR + (outerR-innerR)*i/12.0;
-		let arc = SVG.arcLine(0,0, r, pipad(0), pipad(2*Math.PI));
+		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
 		SVG.setAttribute(arc, "fill", "none");
 		SVG.setAttribute(arc, "stroke", "white");
 		SVG.setAttribute(arc, "stroke-linecap", "round");
@@ -160,7 +160,7 @@ loadCSV("2019.csv", function(data){
 	// outlines
 	[0, 12].forEach(i =>{
 		let r = innerR + (outerR-innerR)*i/12.0;
-		let arc = SVG.arcLine(0,0, r, pipad(0), pipad(2*Math.PI));
+		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
 		SVG.setAttribute(arc, "fill", "none");
 		SVG.setAttribute(arc, "stroke", gridColor);
 		SVG.setAttribute(arc, "stroke-linecap", "round");

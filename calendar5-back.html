@@ -157,8 +157,8 @@ loadCSV("2019.csv", function(data){
 	flipLayer2.appendChild(dataLayer);
 
 	// outer measurement lines
-	// let arc0 = SVG.arcLine(0, 0, innerR, pipad(0), pipad(2*Math.PI));
-	// let arc1 = SVG.arcLine(0, 0, outerR, pipad(0), pipad(2*Math.PI));
+	// let arc0 = SVG.arc(0, 0, innerR, pipad(0), pipad(2*Math.PI));
+	// let arc1 = SVG.arc(0, 0, outerR, pipad(0), pipad(2*Math.PI));
 	// SVG.setAttribute(arc0, "fill", "none");
 	// SVG.setAttribute(arc0, "stroke", "black");
 	// SVG.setAttribute(arc1, "fill", "none");
@@ -169,7 +169,7 @@ loadCSV("2019.csv", function(data){
 
 	for(let i = 12; i >= 0; i--){
 		let r = innerR + (outerR-innerR)*i/12.0;
-		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
+		let arc = SVG.wedge(0,0, r, pipad(0), pipad(2*Math.PI));
 		let f = (1-i%2)*10+245;
 		SVG.setAttribute(arc, "fill", "rgb("+f+","+f+","+f+")");
 		// SVG.setAttribute(arc, "stroke", "black");
@@ -178,11 +178,23 @@ loadCSV("2019.csv", function(data){
 		gridLayer.appendChild(arc);
 	}
 
+	for(let i = 12; i >= 0; i--){
+		let r = innerR + (outerR-innerR)*i/12.0;
+		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
+		let f = (1-i%2)*10+245;
+		SVG.setAttribute(arc, "fill", "none");
+		SVG.setAttribute(arc, "stroke", "#888");
+		SVG.setAttribute(arc, "stroke-width", 0.25);
+		// SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
+		SVG.setAttribute(arc, "stroke-linecap", "round");
+		gridLayer.appendChild(arc);
+	}
+
 
 	// Array.from(Array(13)).forEach((_,i) => {
 	[0,12].forEach(i => {
 		let r = innerR + (outerR-innerR)*i/12.0;
-		let arc = SVG.arcLine(0,0, r, pipad(0), pipad(2*Math.PI));
+		let arc = SVG.arc(0,0, r, pipad(0), pipad(2*Math.PI));
 		SVG.setAttribute(arc, "fill", "none");
 		// SVG.setAttribute(arc, "stroke", "black");
 		// SVG.setAttribute(arc, "stroke-dasharray", "0.01 10");
@@ -229,7 +241,7 @@ loadCSV("2019.csv", function(data){
 			Math.sin(a)*rSmall,
 			Math.cos(a)*rLarge,
 			Math.sin(a)*rLarge);
-		SVG.setAttribute(l, "stroke", "#777");
+		SVG.setAttribute(l, "stroke", "#888");
 		SVG.setAttribute(l, "stroke-width", 0.666);
 		gridLayer.appendChild(l);
 	});
@@ -395,6 +407,7 @@ loadCSV("2019.csv", function(data){
 
 	// });
 
+	// draw planets
 	let planetMinMax = planets.map((p, pi) => {
 		let sorted = p.distance.slice().sort((a,b)=>a-b);
 		return [sorted[0], sorted[sorted.length-1]];
@@ -404,17 +417,35 @@ loadCSV("2019.csv", function(data){
 			let radius = innerR + (outerR-innerR) * li/arr.length;
 			return [Math.cos(l)*radius, Math.sin(l)*radius];
 		})
-	)
+	).reverse()
+	// planetLines.forEach((p,i) =>{
+	// 	let planetLine = SVG.polyline(p);
+	// 	SVG.setAttribute(planetLine, "stroke", planets[i].color);
+	// 	SVG.setAttribute(planetLine, "fill", "none");
+	// 	SVG.setAttribute(planetLine, "stroke-width", 2);
+	// 	planetsLayer.appendChild(planetLine);
+	// });
 
-	planets.reverse().forEach((planet,pRev) => {
-		let p = planets.length - 1 - pRev;
-		for(let i = 1; i < planet.longitude.length; i++) {
-			let lon = planet.longitude;
+	planetLines.forEach((p,piReverse,parr) => {
+		let pi = parr.length - 1 - piReverse;
+		p.forEach((point, i, arr) => {
+			if(i == 0){ return; }
+
+
+			// let distance = 1.0 - (planets[pi].distance[i] - planetMinMax[pi][0]) / (planetMinMax[pi][1] - planetMinMax[pi][0])
+			// let planetWhite = SVG.line(arr[i][0], arr[i][1], arr[i+1][0], arr[i+1][1]);
+			// SVG.setAttribute(planetWhite, "stroke", "white");
+			// SVG.setAttribute(planetWhite, "stroke-linecap", "round");
+			// SVG.setAttribute(planetWhite, "stroke-width", 0.25 + 4*distance + 2);
+			// planetsLayer.appendChild(planetWhite);
+
+
+			let lon = planets[pi].longitude;
 			let calendarA = pipad(i/lon.length*2*Math.PI);
 			let lastCalendarA = pipad((i-1)/lon.length*2*Math.PI);
 			let planetR = innerR + (outerR-innerR)*lonSh(lon[i])/(2*Math.PI);
 			let lastPlanetR = innerR + (outerR-innerR)*lonSh(lon[i-1])/(2*Math.PI);
-			let distance = 1.0 - (planet.distance[i] - planetMinMax[p][0]) / (planetMinMax[p][1] - planetMinMax[p][0])
+			let distance = 1.0 - (planets[pi].distance[i] - planetMinMax[pi][0]) / (planetMinMax[pi][1] - planetMinMax[pi][0])
 			if( (lonSh(lon[i]) > 5.7 && lonSh(lon[i-1]) < .5) ||
 			    (lonSh(lon[i-1]) > 5.7 && lonSh(lon[i]) < .5) ){
 			} else{
@@ -424,37 +455,71 @@ loadCSV("2019.csv", function(data){
 					Math.cos(calendarA)*planetR,
 					Math.sin(calendarA)*planetR );
 				planetLine.setAttribute("stroke-width", 2);
-				planetLine.setAttribute("stroke-width", distance + 2);
+				planetLine.setAttribute("stroke-width", distance*0.75+0.25);
 				planetLine.setAttribute("stroke-linecap", "round");
-				planetLine.setAttribute("stroke", "white");
+				planetLine.setAttribute("stroke", "black");
+				// planetLine.setAttribute("stroke", planets[pi].color);
 				planetsLayer.appendChild(planetLine);
 			}
-		}
 
-		for(let i = 1; i < planet.longitude.length; i++) {
-			let lon = planet.longitude;
-			let calendarA = pipad(i/lon.length*2*Math.PI);
-			let lastCalendarA = pipad((i-1)/lon.length*2*Math.PI);
-			let planetR = innerR + (outerR-innerR)*lonSh(lon[i])/(2*Math.PI);
-			let lastPlanetR = innerR + (outerR-innerR)*lonSh(lon[i-1])/(2*Math.PI);
-			let distance = 1.0 - (planet.distance[i] - planetMinMax[p][0]) / (planetMinMax[p][1] - planetMinMax[p][0])
-			if( (lonSh(lon[i]) > 5.7 && lonSh(lon[i-1]) < .5) ||
-			    (lonSh(lon[i-1]) > 5.7 && lonSh(lon[i]) < .5) ){
-			} else{
-				let planetLine = SVG.line(
-					Math.cos(lastCalendarA)*lastPlanetR,
-					Math.sin(lastCalendarA)*lastPlanetR,
-					Math.cos(calendarA)*planetR,
-					Math.sin(calendarA)*planetR );
-				planetLine.setAttribute("stroke-width", 2);
-				planetLine.setAttribute("stroke-width", distance + 1);
-				planetLine.setAttribute("stroke-linecap", "round");
-				planetLine.setAttribute("stroke", "#999");
-				// planetLine.setAttribute("stroke", planet.color);
-				planetsLayer.appendChild(planetLine);
-			}
-		}
+
+
+
+		});
 	});
+
+
+
+
+	// planets.reverse().forEach((planet,pRev) => {
+	// 	let p = planets.length - 1 - pRev;
+	// 	for(let i = 1; i < planet.longitude.length; i++) {
+	// 		let lon = planet.longitude;
+	// 		let calendarA = pipad(i/lon.length*2*Math.PI);
+	// 		let lastCalendarA = pipad((i-1)/lon.length*2*Math.PI);
+	// 		let planetR = innerR + (outerR-innerR)*lonSh(lon[i])/(2*Math.PI);
+	// 		let lastPlanetR = innerR + (outerR-innerR)*lonSh(lon[i-1])/(2*Math.PI);
+	// 		let distance = 1.0 - (planet.distance[i] - planetMinMax[p][0]) / (planetMinMax[p][1] - planetMinMax[p][0])
+	// 		if( (lonSh(lon[i]) > 5.7 && lonSh(lon[i-1]) < .5) ||
+	// 		    (lonSh(lon[i-1]) > 5.7 && lonSh(lon[i]) < .5) ){
+	// 		} else{
+	// 			let planetLine = SVG.line(
+	// 				Math.cos(lastCalendarA)*lastPlanetR,
+	// 				Math.sin(lastCalendarA)*lastPlanetR,
+	// 				Math.cos(calendarA)*planetR,
+	// 				Math.sin(calendarA)*planetR );
+	// 			planetLine.setAttribute("stroke-width", 2);
+	// 			planetLine.setAttribute("stroke-width", distance + 2);
+	// 			planetLine.setAttribute("stroke-linecap", "round");
+	// 			planetLine.setAttribute("stroke", "white");
+	// 			planetsLayer.appendChild(planetLine);
+	// 		}
+	// 	}
+
+	// 	for(let i = 1; i < planet.longitude.length; i++) {
+	// 		let lon = planet.longitude;
+	// 		let calendarA = pipad(i/lon.length*2*Math.PI);
+	// 		let lastCalendarA = pipad((i-1)/lon.length*2*Math.PI);
+	// 		let planetR = innerR + (outerR-innerR)*lonSh(lon[i])/(2*Math.PI);
+	// 		let lastPlanetR = innerR + (outerR-innerR)*lonSh(lon[i-1])/(2*Math.PI);
+	// 		let distance = 1.0 - (planet.distance[i] - planetMinMax[p][0]) / (planetMinMax[p][1] - planetMinMax[p][0])
+	// 		if( (lonSh(lon[i]) > 5.7 && lonSh(lon[i-1]) < .5) ||
+	// 		    (lonSh(lon[i-1]) > 5.7 && lonSh(lon[i]) < .5) ){
+	// 		} else{
+	// 			let planetLine = SVG.line(
+	// 				Math.cos(lastCalendarA)*lastPlanetR,
+	// 				Math.sin(lastCalendarA)*lastPlanetR,
+	// 				Math.cos(calendarA)*planetR,
+	// 				Math.sin(calendarA)*planetR );
+	// 			planetLine.setAttribute("stroke-width", 2);
+	// 			planetLine.setAttribute("stroke-width", distance + 1);
+	// 			planetLine.setAttribute("stroke-linecap", "round");
+	// 			planetLine.setAttribute("stroke", "#999");
+	// 			// planetLine.setAttribute("stroke", planet.color);
+	// 			planetsLayer.appendChild(planetLine);
+	// 		}
+	// 	}
+	// });
 
 	let tMonthStyle = "fill:#ccc; font-family:Avenir Next; font-size:10px; text-anchor: middle;";
 	monthNames.reverse().forEach((month,i) => {
