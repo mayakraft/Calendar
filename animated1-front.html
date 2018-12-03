@@ -149,7 +149,7 @@ let index = -200;
 function loop(){
 	drawIndex(index);
 	updateDateText(index);
-	index++;
+	index+=1;
 }
 
 
@@ -205,6 +205,7 @@ function drawText(){
 		let text = SVG.text(str, 0, 0);
 		let transform = "rotate("+i/12*360+") translate(0 "+(-outerR - 20)+")"
 		text.setAttribute("style", tStyleZodiac);
+		text.setAttribute("opacity", 0);
 		text.setAttribute("transform", transform);
 		textLayer.appendChild(text);
 		zodiacTexts.push(text);
@@ -214,12 +215,14 @@ function drawText(){
 	lastYearText = SVG.text(parseInt(year[0]) - 1, 0, 0);
 	let lastTransform = "translate(0 "+(-innerR + 20)+")"
 	lastYearText.setAttribute("style", tStyleYear);
+	lastYearText.setAttribute("opacity", 0);
 	lastYearText.setAttribute("transform", lastTransform);
 	textLayer.appendChild(lastYearText);
 
 	nextYearText = SVG.text(parseInt(year[0]) + 1, 0, 0);
 	let nextTransform = "translate(0 "+(-outerR)+")"
 	nextYearText.setAttribute("style", tStyleYear);
+	nextYearText.setAttribute("opacity", 0);
 	nextYearText.setAttribute("transform", nextTransform);
 	textLayer.appendChild(nextYearText);
 
@@ -227,28 +230,31 @@ function drawText(){
 	dateText = SVG.text("", 0, 0);
 	let dateTextTransform = "translate(0 "+(-14)+")"
 	dateText.setAttribute("style", dateTextStyle);
+	dateText.setAttribute("opacity", 0);
 	dateText.setAttribute("transform", dateTextTransform);
 	textLayer.appendChild(dateText);
 
 }
 
 function updateDateText(index){
-	let zOpa = (index - 200)/500;
+	// let zOpa = (index - 200)/500;
+	let zOpa = (index - 600)/100;
 	zodiacTexts.forEach((z,i) => {
-		zodiacOpacity = zOpa - i*0.12;
+		// zodiacOpacity = zOpa - i*0.12;
+		zodiacOpacity = zOpa - i*0.4;
 		if(zodiacOpacity < 0){ zodiacOpacity = 0; }
 		if(zodiacOpacity > 1){ zodiacOpacity = 1; }
 		z.setAttribute("opacity", zodiacOpacity);
 	});
 
-	let yearOpacity = (index - moonLongitude.length+70)/100;
-	if(yearOpacity < 0){ yearOpacity = 0; }
-	if(yearOpacity > 1){ yearOpacity = 1; }
-	lastYearText.setAttribute("opacity", yearOpacity);
-	nextYearText.setAttribute("opacity", yearOpacity);
+	// let yearOpacity = (index - moonLongitude.length+70)/100;
+	// if(yearOpacity < 0){ yearOpacity = 0; }
+	// if(yearOpacity > 1){ yearOpacity = 1; }
+	// lastYearText.setAttribute("opacity", yearOpacity);
+	// nextYearText.setAttribute("opacity", yearOpacity);
 
 
-	let opacity = 1.0 - (index - moonLongitude.length+30)/250;
+	let opacity = 1.0 - (index - moonLongitude.length-50)/250;
 	if(opacity < 0){ opacity = 0;}
 	if(opacity > 1){ opacity = 1;}
 	dateText.setAttribute("opacity", opacity);
